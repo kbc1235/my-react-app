@@ -2,7 +2,7 @@
 const axios = require('axios');
 
 // 환경 변수에서 Notion API 키를 가져옵니다
-const NOTION_API_KEY = process.env.VITE_NOTION_API_KEY;
+const NOTION_API_KEY = process.env.NOTION_API_KEY;
 const NOTION_API_VERSION = '2022-06-28';
 const NOTION_API_URL = 'https://api.notion.com/v1';
 
@@ -28,16 +28,49 @@ exports.handler = async function(event) {
     };
   }
 
+  // 디버깅 정보 로깅
+  console.log('이벤트 정보:', {
+    경로: event.path,
+    메서드: event.httpMethod,
+    헤더: event.headers,
+    바디_길이: event.body ? event.body.length : 0
+  });
+  console.log('환경 변수:', {
+    NOTION_API_KEY_존재: !!NOTION_API_KEY,
+    NOTION_API_KEY_길이: NOTION_API_KEY ? NOTION_API_KEY.length : 0
+  });
+
   try {
     // URL 경로에서 Notion API 엔드포인트 추출
     const path = event.path.replace('/.netlify/functions/notion', '');
     
     // Notion API 요청 URL 구성
-    const notionUrl = `${NOTION_API_URL}${path}`;
+    const notionUrl = path ? `${NOTION_API_URL}${path}` : NOTION_API_URL;
+    
+    console.log('Notion API 요청 URL:', notionUrl);
     
     // 요청 메서드 및 바디 설정
     const method = event.httpMethod;
-    const body = event.body ? JSON.parse(event.body) : undefined;
+    let body;
+    
+    try {
+      body = event.body ? JSON.parse(event.body) : undefined;
+    } catch (parseError) {
+      console.error('요청 바디 파싱 오류:', parseError);
+      body = undefined;
+    }
+    
+    // API 키가 없는 경우 오류 반환
+    if (!NOTION_API_KEY) {
+      console.error('Notion API 키가 설정되지 않았습니다.');
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
+          error: 'Notion API 키가 설정되지 않았습니다. 환경 변수를 확인하세요.'
+        })
+      };
+    }
     
     // Notion API로 요청 전송
     const response = await axios({
@@ -60,6 +93,11 @@ exports.handler = async function(event) {
   } catch (error) {
     // 에러 정보 로깅
     console.error('Notion API 요청 중 오류 발생:', error);
+    console.error('에러 세부 정보:', {
+      메시지: error.message,
+      응답_상태: error.response?.status,
+      응답_데이터: error.response?.data
+    });
     
     // 에러 응답 반환
     return {
