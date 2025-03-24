@@ -36,30 +36,9 @@ export const notionApiRequest = async (endpoint, options = {}) => {
   console.log(`API 요청: ${url} (프로덕션 모드)`);
   
   try {
-    // 콘솔에 요청 정보 로깅 (디버깅용)
-    console.log('API 요청 상세정보:', {
-      URL: url,
-      메서드: options.method || 'GET',
-      바디: options.body ? '존재함' : '없음'
-    });
-    
-    // 요청 바디에 API 키 추가
-    let requestBody = {};
-    try {
-      if (options.body) {
-        requestBody = JSON.parse(options.body);
-      }
-    } catch (e) {
-      console.error('요청 바디 파싱 오류:', e);
-    }
-    
-    // API 키를 바디에 추가
-    requestBody.apiKey = import.meta.env.VITE_NOTION_API_KEY;
-    
-    // 수정된 옵션
+    // 수정된 옵션 - API 키를 바디에 포함시키지 않음
     const modifiedOptions = {
       ...options,
-      body: JSON.stringify(requestBody),
       headers: {
         'Content-Type': 'application/json',
         ...options.headers
@@ -69,15 +48,7 @@ export const notionApiRequest = async (endpoint, options = {}) => {
     const response = await fetch(url, modifiedOptions);
     
     if (!response.ok) {
-      // 응답 텍스트 출력 시도
-      try {
-        const errorText = await response.text();
-        console.error('API 오류 응답:', errorText);
-      } catch (textError) {
-        console.error('API 오류 응답 읽기 실패:', textError);
-      }
-      
-      throw new Error(`API 오류: ${response.status} ${response.statusText}`);
+      throw new Error(`API 오류: ${response.status}`);
     }
     
     return response;
