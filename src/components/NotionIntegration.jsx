@@ -28,44 +28,44 @@ function NotionIntegration() {
   });
 
   // 운동 기록 템플릿 추가
-  const addWorkoutTemplate = () => {
-    const workoutTemplate = `# 운동 기록
+//   const addWorkoutTemplate = () => {
+//     const workoutTemplate = `# 운동 기록
 
-| 운동 | 기록 |
-| --- | --- |
-| # benchpress | |
-| # clean | |
-| # deadlift | |
-| # jerk | |
-| # snatch | |
-| # squat | |
+// | 운동 | 기록 |
+// | --- | --- |
+// | # benchpress | |
+// | # clean | |
+// | # deadlift | |
+// | # jerk | |
+// | # snatch | |
+// | # squat | |
 
-## 메모
+// ## 메모
 
-`;
-    setInput(workoutTemplate);
-    setTableMode(false);
-  };
+// `;
+//     setInput(workoutTemplate);
+//     setTableMode(false);
+//   };
 
-  // 빈 운동 기록 템플릿 추가
-  const addEmptyWorkoutTemplate = () => {
-    const emptyWorkoutTemplate = `# 운동 기록
+//   // 빈 운동 기록 템플릿 추가
+//   const addEmptyWorkoutTemplate = () => {
+//     const emptyWorkoutTemplate = `# 운동 기록
 
-| 운동 | 기록 |
-| --- | --- |
-| # benchpress | Empty |
-| # clean | Empty |
-| # deadlift | Empty |
-| # jerk | Empty |
-| # snatch | Empty |
-| # squat | Empty |
+// | 운동 | 기록 |
+// | --- | --- |
+// | # benchpress | Empty |
+// | # clean | Empty |
+// | # deadlift | Empty |
+// | # jerk | Empty |
+// | # snatch | Empty |
+// | # squat | Empty |
 
-## 메모
+// ## 메모
 
-`;
-    setInput(emptyWorkoutTemplate);
-    setTableMode(false);
-  };
+// `;
+//     setInput(emptyWorkoutTemplate);
+//     setTableMode(false);
+//   };
 
   // 테이블 모드 활성화
   const enableTableMode = () => {
@@ -385,10 +385,10 @@ function NotionIntegration() {
 
   return (
     <div className="notion-integration">
-      <h2>GPT 응답을 Notion에 저장하기</h2>
+      <h2>Notion에 저장하기</h2>
       
       <div className="template-buttons">
-        <button 
+        {/* <button 
           onClick={addWorkoutTemplate}
           className="template-button"
         >
@@ -399,7 +399,7 @@ function NotionIntegration() {
           className="template-button"
         >
           빈 운동 기록 템플릿 추가
-        </button>
+        </button> */}
         <button 
           onClick={enableTableMode}
           className="template-button table-mode-button"
