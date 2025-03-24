@@ -3,22 +3,14 @@
  * @returns {Object} 환경 정보
  */
 export const getEnvironment = () => {
-  // 배포 환경이나 API_MODE가 'production'으로 설정된 경우 프로덕션으로 간주
-  const isProduction = import.meta.env.VITE_API_MODE === 'production' || import.meta.env.PROD === true;
-  const isNetlify = Boolean(import.meta.env.NETLIFY) || window.location.hostname.includes('netlify.app');
-  
-  console.log('환경 변수 확인:', {
-    VITE_API_MODE: import.meta.env.VITE_API_MODE,
-    PROD: import.meta.env.PROD,
-    NETLIFY: import.meta.env.NETLIFY,
-    호스트명: window.location.hostname
-  });
+  // 항상 프로덕션 모드로 설정
+  console.log('환경 설정: 항상 프로덕션 모드로 동작');
   
   return {
-    isProduction,
-    isNetlify,
-    isDevelopment: !isProduction,
-    apiMode: import.meta.env.VITE_API_MODE || 'development'
+    isProduction: true,
+    isNetlify: true,
+    isDevelopment: false,
+    apiMode: 'production'
   };
 };
 
@@ -27,15 +19,8 @@ export const getEnvironment = () => {
  * @returns {string} API 엔드포인트 접두사
  */
 export const getApiEndpointPrefix = () => {
-  const { isProduction, isNetlify } = getEnvironment();
-  
-  // 프로덕션(Netlify) 환경에서는 Netlify Functions 사용
-  if (isProduction || isNetlify) {
-    return '/.netlify/functions/notion';
-  }
-  
-  // 개발 환경에서는 Vite 프록시 사용
-  return '/api/notion';
+  // 항상 Netlify Functions 사용
+  return '/.netlify/functions/notion';
 };
 
 /**
@@ -45,89 +30,57 @@ export const getApiEndpointPrefix = () => {
  * @returns {Promise<Response>} fetch 응답
  */
 export const notionApiRequest = async (endpoint, options = {}) => {
-  const { isProduction, isNetlify } = getEnvironment();
   const prefix = getApiEndpointPrefix();
   const url = `${prefix}${endpoint}`;
   
-  console.log(`API 요청: ${url} (${isProduction ? 'Production' : 'Development'} 모드, Netlify: ${isNetlify ? '예' : '아니오'})`);
+  console.log(`API 요청: ${url} (프로덕션 모드)`);
   
   try {
-    // 프로덕션 환경에서는 인증 헤더를 클라이언트에서 보내지 않음 (Netlify Functions에서 처리)
-    if (isProduction || isNetlify) {
-      // 콘솔에 요청 정보 로깅 (디버깅용)
-      console.log('API 요청 상세정보:', {
-        URL: url,
-        메서드: options.method || 'GET',
-        바디: options.body ? '존재함' : '없음'
-      });
-      
-      // 요청 바디에 API 키 추가 (비상 방안)
-      let requestBody = {};
-      try {
-        if (options.body) {
-          requestBody = JSON.parse(options.body);
-        }
-      } catch (e) {
-        console.error('요청 바디 파싱 오류:', e);
+    // 콘솔에 요청 정보 로깅 (디버깅용)
+    console.log('API 요청 상세정보:', {
+      URL: url,
+      메서드: options.method || 'GET',
+      바디: options.body ? '존재함' : '없음'
+    });
+    
+    // 요청 바디에 API 키 추가
+    let requestBody = {};
+    try {
+      if (options.body) {
+        requestBody = JSON.parse(options.body);
       }
-      
-      // API 키를 바디에 추가
-      requestBody.apiKey = import.meta.env.VITE_NOTION_API_KEY;
-      
-      // 수정된 옵션
-      const modifiedOptions = {
-        ...options,
-        body: JSON.stringify(requestBody),
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers
-        }
-      };
-      
-      const response = await fetch(url, modifiedOptions);
-      
-      if (!response.ok) {
-        // 응답 텍스트 출력 시도
-        try {
-          const errorText = await response.text();
-          console.error('API 오류 응답:', errorText);
-        } catch (textError) {
-          console.error('API 오류 응답 읽기 실패:', textError);
-        }
-        
-        throw new Error(`API 오류: ${response.status} ${response.statusText}`);
-      }
-      
-      return response;
-    } 
-    // 개발 환경에서는 API 키를 포함한 요청
-    else {
-      const NOTION_API_KEY = import.meta.env.VITE_NOTION_API_KEY;
-      
-      const response = await fetch(url, {
-        ...options,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${NOTION_API_KEY}`,
-          'Notion-Version': '2022-06-28',
-          ...options.headers
-        }
-      });
-      
-      if (!response.ok) {
-        // 응답 텍스트 출력 시도
-        try {
-          const errorText = await response.text();
-          console.error('API 오류 응답:', errorText);
-        } catch (textError) {
-          console.error('API 오류 응답 읽기 실패:', textError);
-        }
-        
-        throw new Error(`API 오류: ${response.status} ${response.statusText}`);
-      }
-      
-      return response;
+    } catch (e) {
+      console.error('요청 바디 파싱 오류:', e);
     }
+    
+    // API 키를 바디에 추가
+    requestBody.apiKey = import.meta.env.VITE_NOTION_API_KEY;
+    
+    // 수정된 옵션
+    const modifiedOptions = {
+      ...options,
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+      }
+    };
+    
+    const response = await fetch(url, modifiedOptions);
+    
+    if (!response.ok) {
+      // 응답 텍스트 출력 시도
+      try {
+        const errorText = await response.text();
+        console.error('API 오류 응답:', errorText);
+      } catch (textError) {
+        console.error('API 오류 응답 읽기 실패:', textError);
+      }
+      
+      throw new Error(`API 오류: ${response.status} ${response.statusText}`);
+    }
+    
+    return response;
   } catch (error) {
     console.error('API 요청 오류:', error);
     throw error;

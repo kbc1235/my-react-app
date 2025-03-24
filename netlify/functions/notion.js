@@ -70,40 +70,6 @@ exports.handler = async function(event) {
       body = undefined;
     }
     
-    // API 키가 없는 경우 오류 반환
-    if (!NOTION_API_KEY) {
-      console.error('Notion API 키가 설정되지 않았습니다.');
-      
-      // API 키 대체 방법 시도
-      let hardcodedApiKey = null;
-      try {
-        // 요청 바디에서 API 키 찾기 시도 (디버깅 목적)
-        if (body && body.apiKey) {
-          hardcodedApiKey = body.apiKey;
-          console.log('요청 바디에서 API 키 발견');
-        }
-      } catch (e) {
-        console.error('대체 API 키 찾기 실패:', e);
-      }
-      
-      if (!hardcodedApiKey) {
-        return {
-          statusCode: 500,
-          headers,
-          body: JSON.stringify({
-            error: 'Notion API 키가 설정되지 않았습니다. 환경 변수를 확인하세요.',
-            envKeys: Object.keys(process.env).filter(key => !key.includes('SECRET') && !key.includes('KEY')).join(', '),
-            hasNotionEnvVar: !!process.env.NOTION_API_KEY,
-            hasViteNotionEnvVar: !!process.env.VITE_NOTION_API_KEY
-          })
-        };
-      }
-      
-      // 하드코딩된 키 사용 (임시 디버깅용)
-      console.log('하드코딩된 키 사용 시도 (임시)');
-      NOTION_API_KEY = hardcodedApiKey;
-    }
-    
     // Notion API로 요청 전송
     const response = await axios({
       method,
