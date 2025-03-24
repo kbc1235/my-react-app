@@ -33,7 +33,7 @@ function App() {
       </header>
       
       <div className="app-tabs">
-        <button 
+        {/* <button 
           className={`tab-button ${activeTab === 'table' ? 'active' : ''}`}
           onClick={() => setActiveTab('table')}
         >
@@ -50,7 +50,7 @@ function App() {
           onClick={() => setActiveTab('multiRadar')}
         >
           다중 방사형 차트
-        </button>
+        </button> */}
         <button 
           className={`tab-button ${activeTab === 'gameRadar' ? 'active' : ''}`}
           onClick={() => setActiveTab('gameRadar')}
