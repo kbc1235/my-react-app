@@ -1,12 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
 #root {
-  width:100%;
+  width: 100%;
   margin: 0 auto;
   padding: 0;
   text-align: center;
-  background-color: #0f172a;
+  background-color: #000000;
   min-height: 100vh;
 }
 
@@ -16,11 +17,13 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em var(--accent-color));
 }
+
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 2em var(--accent-color));
 }
 
 @keyframes logo-spin {
@@ -39,11 +42,21 @@
 }
 
 .card {
-  padding: 2em;
+  padding: 1.5em;
+  background-color: #121212;
+  border-radius: 8px;
+  border: 1px solid #2a2a2a;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .read-the-docs {
-  color: #888;
+  color: var(--text-secondary);
 }
 
 .app-container {
@@ -51,218 +64,213 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: 'Noto Sans KR', sans-serif;
-  background-color: #0f172a;
-  color: #edf2f7;
+  font-family: 'Roboto', 'Noto Sans KR', sans-serif;
+  background-color: #000000;
+  color: var(--text-primary);
   position: relative;
   overflow-x: hidden;
 }
 
-/* 게임 스타일의 그리드 배경 */
+/* 그리드 배경 제거 - 깨끗한 디자인을 위해 */
 .app-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    linear-gradient(to right, rgba(75, 217, 251, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(75, 217, 251, 0.05) 1px, transparent 1px);
-  background-size: 20px 20px;
-  pointer-events: none;
-  z-index: 0;
+  content: none;
 }
 
 .app-header {
-  background-color: #111827;
-  color: #4bd9fb;
-  padding: 2rem;
+  background-color: #000000;
+  color: var(--text-primary);
+  padding: 1.5rem;
   text-align: center;
-  border-bottom: 3px solid #4bd9fb;
-  box-shadow: 0 0 20px rgba(75, 217, 251, 0.3);
+  border-bottom: 2px solid var(--accent-color);
   position: relative;
   z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-header .left {
+  display: flex;
+  align-items: center;
+}
+
+.app-header .center {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.app-header .right {
+  display: flex;
+  align-items: center;
 }
 
 .app-header h1 {
   margin: 0;
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-  text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
-  color: #ffcd39;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .app-header p {
   margin: 0;
   opacity: 0.9;
   font-size: 0.9rem;
-  font-weight: 400;
 }
 
 .app-tabs {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-  padding: 1.5rem;
-  background-color: #1e293b;
-  border-bottom: 3px solid #4bd9fb;
+  padding: 0;
+  background-color: #000000;
   position: relative;
   z-index: 1;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #333;
 }
 
 .tab-button {
-  background-color: #111827;
-  color: #4bd9fb;
-  border: 2px solid #4bd9fb;
-  border-radius: 4px;
-  padding: 0.7rem 1.2rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 1rem 2rem;
   cursor: pointer;
-  font-size: 0.85rem;
-  transition: all 0.3s;
-  font-family: 'Noto Sans KR', sans-serif;
-  text-transform: uppercase;
+  font-size: 0.9rem;
   font-weight: 500;
-  box-shadow: 0 4px 0 #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
   position: relative;
-  top: 0;
+  outline: none;
+}
+
+.tab-button:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 3px;
+  background-color: var(--accent-color);
+  transition: width 0.3s ease;
 }
 
 .tab-button:hover {
-  background-color: #1e293b;
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 #0f172a;
+  color: var(--text-primary);
+}
+
+.tab-button:hover:after {
+  width: 50%;
 }
 
 .tab-button:active {
-  transform: translateY(4px);
-  box-shadow: none;
+  transform: translateY(1px);
 }
 
 .tab-button.active {
-  background-color: #4bd9fb;
-  color: #111827;
-  border-color: #4bd9fb;
-  font-weight: bold;
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.tab-button.active:after {
+  width: 80%;
 }
 
 .app-main {
   flex: 1;
-  padding: 2rem 1rem;
-  background-color: #0f172a;
+  padding: 1rem;
   position: relative;
   z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .app-footer {
-  background-color: #111827;
-  color: #4bd9fb;
-  padding: 1.5rem;
+  background-color: #000000;
+  color: var(--text-secondary);
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  border-top: 3px solid #4bd9fb;
-  font-size: 0.9rem;
-  font-weight: 400;
-  box-shadow: 0 0 20px rgba(75, 217, 251, 0.3);
-  position: relative;
-  z-index: 1;
+  padding: 1.5rem;
+  font-size: 0.8rem;
+  border-top: 1px solid #333;
 }
 
-.counter button {
-  background-color: #4bd9fb;
-  color: #111827;
-  border: 2px solid #4bd9fb;
-  padding: 0.7rem 1.2rem;
+.app-footer a {
+  color: var(--accent-color);
+}
+
+/* 버튼 스타일 */
+.btn {
+  background-color: #1a1a1a;
+  color: var(--text-primary);
+  border: 1px solid #333;
+  padding: 0.5rem 1rem;
   border-radius: 4px;
-  cursor: pointer;
   font-size: 0.9rem;
-  font-family: 'Noto Sans KR', sans-serif;
   font-weight: 500;
-  transition: all 0.3s;
-  box-shadow: 0 4px 0 #0f172a;
-  position: relative;
-  top: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.counter button:hover {
-  background-color: #60e1ff;
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 #0f172a;
+.btn:hover {
+  border-color: var(--accent-color);
 }
 
-.counter button:active {
-  transform: translateY(4px);
-  box-shadow: none;
+.btn-primary {
+  background-color: var(--accent-color);
+  color: #000;
+  border: none;
 }
 
-/* 네온 효과 애니메이션 */
-@keyframes neonFlicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-    text-shadow: 
-      0 0 2px #fff,
-      0 0 4px #fff,
-      0 0 6px #fff,
-      0 0 10px #4bd9fb,
-      0 0 20px #4bd9fb,
-      0 0 30px #4bd9fb,
-      0 0 40px #4bd9fb,
-      0 0 50px #4bd9fb;
-  }
-  20%, 24%, 55% {
-    text-shadow: none;
-  }
+.btn-primary:hover {
+  background-color: var(--accent-color-light);
 }
 
-.app-header h1 {
-  animation: neonFlicker 4s infinite alternate;
-}
-
+/* 반응형 디자인 */
 @media (max-width: 768px) {
   .app-header {
-    padding: 1.5rem;
+    padding: 1rem;
+    flex-direction: column;
   }
-  
+
   .app-header h1 {
     font-size: 1.2rem;
   }
-  
+
   .app-main {
-    padding: 1rem 0.5rem;
+    padding: 1rem;
   }
-  
+
   .app-tabs {
-    flex-wrap: wrap;
-    padding: 0.75rem 0.5rem;
-    gap: 0.5rem;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 0.5rem;
   }
-  
+
   .tab-button {
-    padding: 0.5rem 0.8rem;
+    padding: 0.75rem 1rem;
     font-size: 0.8rem;
+    white-space: nowrap;
   }
 }
 
-/* 픽셀 스타일 스크롤바 */
+/* 스크롤바 스타일 재정의 */
 ::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #111827;
-  border: 2px solid #4bd9fb;
+  background: #1a1a1a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4bd9fb;
-  border: 2px solid #111827;
+  background: #444;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #60e1ff;
+  background: var(--accent-color-dark);
 }
