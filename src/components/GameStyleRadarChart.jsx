@@ -74,6 +74,7 @@ function GameStyleRadarChart() {
     const fetchData = async () => {
       try {
         setLoading(true);
+        setError(null);
         let result;
         
         try {
@@ -83,23 +84,35 @@ function GameStyleRadarChart() {
         } catch (proxyError) {
           console.error('Vite 프록시 방식 실패, CORS 프록시로 시도합니다:', proxyError);
           
-          // Vite 프록시 실패 시 CORS 프록시 방식 시도
-          result = await fetchNotionDatabaseWithProxy();
-          setUsingProxy(true);
+          try {
+            // Vite 프록시 실패 시 CORS 프록시 방식 시도
+            result = await fetchNotionDatabaseWithProxy();
+            setUsingProxy(true);
+          } catch (corsError) {
+            console.error('CORS 프록시 방식도 실패:', corsError);
+            throw new Error('API 연결에 실패했습니다 (CORS 오류)');
+          }
+        }
+        
+        // 결과 유효성 검사
+        if (!result || !Array.isArray(result) || result.length === 0) {
+          console.warn('Notion에서 가져온 데이터가 비어 있습니다:', result);
+          setError('Notion에서 데이터를 찾을 수 없습니다.');
+          setNotionData([]);
+          return;
         }
         
         // 전체 데이터 저장
         setNotionData(result);
+        console.log('Notion 데이터 로드 완료, 항목 수:', result.length);
         
         // 첫 번째 항목 처리
-        if (result && result.length > 0) {
-          updateSelectedCharacter(result, 0);
-        }
+        updateSelectedCharacter(result, 0);
         
-        console.log('Notion 데이터 로드 완료:', result);
       } catch (err) {
-        setError('데이터를 불러오는 중 오류가 발생했습니다.');
+        setError(`데이터를 불러오는 중 오류가 발생했습니다: ${err.message}`);
         console.error('데이터 로딩 오류:', err);
+        setNotionData([]);
       } finally {
         setLoading(false);
       }
@@ -127,17 +140,36 @@ function GameStyleRadarChart() {
 
   // 선택된 캐릭터 업데이트 함수
   const updateSelectedCharacter = (data, index) => {
+    // 데이터 검증
+    if (!data || !Array.isArray(data) || index < 0 || index >= data.length) {
+      console.error('유효하지 않은 데이터 또는 인덱스:', { dataLength: data?.length, index });
+      setError('선택한 캐릭터 데이터를 찾을 수 없습니다.');
+      return;
+    }
+
     const item = data[index];
+    
+    // ID 검증
+    if (!item || !item.id) {
+      console.error('유효하지 않은 항목 데이터:', item);
+      setError('선택한 캐릭터의 데이터가 유효하지 않습니다.');
+      return;
+    }
+    
+    console.log('캐릭터 데이터 업데이트 시작:', { id: item.id, index });
+    
+    // 차트 데이터 변환
     const transformedData = transformDataForGameChart(item);
     setChartData(transformedData.chartData);
     
     // 캐릭터 이름 추출 시도
+    let name = `캐릭터 #${index + 1}`;
     const titleProp = Object.values(item.properties).find(prop => prop.type === 'title');
-    if (titleProp && titleProp.title.length > 0) {
-      setCharacterName(titleProp.title.map(t => t.plain_text).join(''));
-    } else {
-      setCharacterName(`캐릭터 #${index + 1}`);
+    if (titleProp && titleProp.title && titleProp.title.length > 0) {
+      name = titleProp.title.map(t => t.plain_text).join('');
+      name = name.trim() || name; // 빈 문자열이면 기본값 유지
     }
+    setCharacterName(name);
     
     // 레벨 랜덤 설정
     setLevel(Math.floor(Math.random() * 50) + 1);
@@ -148,12 +180,37 @@ function GameStyleRadarChart() {
     
     // 스탯 포인트 설정
     setStatPoints(transformedData.statPoints);
+    
+    console.log('캐릭터 데이터 업데이트 완료:', name);
   };
+
+  // 검색어를 기준으로 필터링된 캐릭터 목록
+  const filteredCharacters = notionData.filter(item => {
+    const characterName = getCharacterName(item);
+    return characterName.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   // 캐릭터 선택 핸들러
   const handleCharacterSelect = (index) => {
-    setSelectedIndex(index);
-    updateSelectedCharacter(notionData, index);
+    // 필터링된 목록에서 실제 원본 데이터의 인덱스를 찾음
+    const selectedItem = filteredCharacters[index];
+    const originalIndex = notionData.findIndex(item => item.id === selectedItem.id);
+    
+    console.log('선택된 항목:', {
+      index: index,  // 필터링된 목록에서의 인덱스
+      filteredItem: selectedItem,  // 필터링된 목록에서 선택된 항목
+      originalIndex: originalIndex,  // 원본 데이터에서의 인덱스
+      originalItem: notionData[originalIndex]  // 원본 데이터에서의 항목
+    });
+    
+    // 원본 데이터의 인덱스를 저장
+    setSelectedIndex(originalIndex);
+    
+    // 선택된 캐릭터 데이터 업데이트
+    updateSelectedCharacter(notionData, originalIndex);
+    
+    // 모바일에서 사이드바 닫기
+    setIsCharacterListOpen(false);
   };
 
   // 사이드바 토글 핸들러
@@ -174,12 +231,6 @@ function GameStyleRadarChart() {
     }
     return index !== undefined ? `캐릭터 #${index + 1}` : '이름 없음';
   };
-
-  // 검색어를 기준으로 필터링된 캐릭터 목록
-  const filteredCharacters = notionData.filter(item => {
-    const characterName = getCharacterName(item);
-    return characterName.toLowerCase().includes(searchTerm.toLowerCase());
-  });
 
   // Notion 데이터를 게임 스타일 차트 데이터로 변환하는 함수
   const transformDataForGameChart = (item) => {
@@ -386,8 +437,8 @@ function GameStyleRadarChart() {
           {filteredCharacters.length > 0 ? (
             filteredCharacters.map((item, index) => (
               <div 
-                key={index} 
-                className={`character-list-item ${index === selectedIndex ? 'selected' : ''}`}
+                key={item.id} 
+                className={`character-list-item ${notionData[selectedIndex]?.id === item.id ? 'selected' : ''}`}
                 onClick={() => handleCharacterSelect(index)}
               >
                 <span className="character-list-name">{getCharacterName(item, index)}</span>
