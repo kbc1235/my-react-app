@@ -9,19 +9,12 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
-import { fetchNotionDatabase } from '../services/notionService';
+import { fetchNotionDatabase, updatePageProperty } from '../services/notionService';
 import { fetchNotionDatabaseWithProxy } from '../services/notionCorsProxyService';
+import { getEnvironment } from '../utils/apiUtils';
 import '../styles/GameStyleRadarChart.css';
 
-// Chart.js 컴포넌트 등록
-ChartJS.register(
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-  Legend
-);
+// Chart.js 컴포넌트 등록은 useEffect 내부로 이동
 
 // 게임 관련 스탯 이름 매핑
 const STAT_NAMES = {
@@ -65,10 +58,29 @@ function GameStyleRadarChart() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [usingProxy, setUsingProxy] = useState(false);
+  const [environment, setEnvironment] = useState({});
   const [statPoints, setStatPoints] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
   const [isCharacterListOpen, setIsCharacterListOpen] = useState(false);
+  const [description, setDescription] = useState('');
+  const [isEditingDesc, setIsEditingDesc] = useState(false);
   const sidebarRef = useRef(null);
+
+  // Chart.js 컴포넌트 등록
+  useEffect(() => {
+    // 컴포넌트 마운트 시 Chart.js 등록
+    ChartJS.register(
+      RadialLinearScale,
+      PointElement,
+      LineElement,
+      Filler,
+      Tooltip,
+      Legend
+    );
+    
+    // 환경 정보 설정
+    setEnvironment(getEnvironment());
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,21 +88,27 @@ function GameStyleRadarChart() {
         setLoading(true);
         setError(null);
         let result;
+        const env = getEnvironment();
         
         try {
-          // 먼저 Vite 프록시 방식 시도
+          // 표준 서비스 사용 (로컬/Netlify 환경에 따라 자동 처리)
           result = await fetchNotionDatabase();
           setUsingProxy(false);
-        } catch (proxyError) {
-          console.error('Vite 프록시 방식 실패, CORS 프록시로 시도합니다:', proxyError);
+        } catch (apiError) {
+          console.error('기본 API 호출 실패, CORS 프록시로 시도합니다:', apiError);
           
-          try {
-            // Vite 프록시 실패 시 CORS 프록시 방식 시도
-            result = await fetchNotionDatabaseWithProxy();
-            setUsingProxy(true);
-          } catch (corsError) {
-            console.error('CORS 프록시 방식도 실패:', corsError);
-            throw new Error('API 연결에 실패했습니다 (CORS 오류)');
+          // 개발 환경에서만 CORS 프록시 시도
+          if (env.isDevelopment) {
+            try {
+              result = await fetchNotionDatabaseWithProxy();
+              setUsingProxy(true);
+            } catch (corsError) {
+              console.error('CORS 프록시 방식도 실패:', corsError);
+              throw new Error('API 연결에 실패했습니다 (CORS 오류)');
+            }
+          } else {
+            // 프로덕션에서는 원래 오류 그대로 발생
+            throw apiError;
           }
         }
         
@@ -158,30 +176,72 @@ function GameStyleRadarChart() {
     
     console.log('캐릭터 데이터 업데이트 시작:', { id: item.id, index });
     
-    // 차트 데이터 변환
-    const transformedData = transformDataForGameChart(item);
-    setChartData(transformedData.chartData);
-    
-    // 캐릭터 이름 추출 시도
-    let name = `캐릭터 #${index + 1}`;
-    const titleProp = Object.values(item.properties).find(prop => prop.type === 'title');
-    if (titleProp && titleProp.title && titleProp.title.length > 0) {
-      name = titleProp.title.map(t => t.plain_text).join('');
-      name = name.trim() || name; // 빈 문자열이면 기본값 유지
+    try {
+      // 차트 데이터 변환
+      const transformedData = transformDataForGameChart(item);
+      
+      // 차트 데이터 유효성 검증
+      if (transformedData && 
+          transformedData.chartData && 
+          transformedData.chartData.labels && 
+          transformedData.chartData.datasets && 
+          transformedData.chartData.datasets.length > 0 &&
+          transformedData.chartData.datasets[0].data) {
+        
+        // 차트 데이터 업데이트
+        setChartData(transformedData.chartData);
+        
+        // 스탯 포인트 설정
+        setStatPoints(transformedData.statPoints || {});
+      } else {
+        console.error('유효하지 않은 차트 데이터:', transformedData);
+        setError('차트 데이터 생성에 실패했습니다.');
+        return;
+      }
+      
+      // 캐릭터 이름 추출 시도
+      let name = `캐릭터 #${index + 1}`;
+      const titleProp = Object.values(item.properties).find(prop => prop.type === 'title');
+      if (titleProp && titleProp.title && titleProp.title.length > 0) {
+        name = titleProp.title.map(t => t.plain_text).join('');
+        name = name.trim() || name; // 빈 문자열이면 기본값 유지
+      }
+      setCharacterName(name);
+
+      // 설명(dec) 추출 시도
+      let desc = '';
+      const decProp = Object.entries(item.properties).find(([key]) => key.toLowerCase() === 'dec');
+      
+      if (decProp && decProp[1].rich_text && decProp[1].rich_text.length > 0) {
+        desc = decProp[1].rich_text.map(t => t.plain_text).join('');
+      } else if (decProp && decProp[1].type === 'rich_text' && decProp[1].rich_text) {
+        desc = decProp[1].rich_text.map(t => t.plain_text).join('');
+      }
+      
+      setDescription(desc);
+      setIsEditingDesc(false);
+      
+      // 레벨 랜덤 설정
+      setLevel(Math.floor(Math.random() * 50) + 1);
+      
+      // 클래스 설정
+      const classes = ['전사', '마법사', '궁수', '도적', '성직자', '드루이드', '바드'];
+      setCharacterClass(classes[Math.floor(Math.random() * classes.length)]);
+      
+      console.log('캐릭터 데이터 업데이트 완료:', name);
+    } catch (error) {
+      console.error('캐릭터 데이터 업데이트 중 오류 발생:', error);
+      setError(`데이터 처리 중 오류가 발생했습니다: ${error.message}`);
     }
-    setCharacterName(name);
-    
-    // 레벨 랜덤 설정
-    setLevel(Math.floor(Math.random() * 50) + 1);
-    
-    // 클래스 설정
-    const classes = ['전사', '마법사', '궁수', '도적', '성직자', '드루이드', '바드'];
-    setCharacterClass(classes[Math.floor(Math.random() * classes.length)]);
-    
-    // 스탯 포인트 설정
-    setStatPoints(transformedData.statPoints);
-    
-    console.log('캐릭터 데이터 업데이트 완료:', name);
+  };
+
+  // 캐릭터 목록에서 이름 표시용 함수
+  const getCharacterName = (item, index) => {
+    const titleProp = Object.values(item.properties).find(prop => prop.type === 'title');
+    if (titleProp && titleProp.title.length > 0) {
+      return titleProp.title.map(t => t.plain_text).join('');
+    }
+    return index !== undefined ? `캐릭터 #${index + 1}` : '이름 없음';
   };
 
   // 검색어를 기준으로 필터링된 캐릭터 목록
@@ -195,13 +255,6 @@ function GameStyleRadarChart() {
     // 필터링된 목록에서 실제 원본 데이터의 인덱스를 찾음
     const selectedItem = filteredCharacters[index];
     const originalIndex = notionData.findIndex(item => item.id === selectedItem.id);
-    
-    console.log('선택된 항목:', {
-      index: index,  // 필터링된 목록에서의 인덱스
-      filteredItem: selectedItem,  // 필터링된 목록에서 선택된 항목
-      originalIndex: originalIndex,  // 원본 데이터에서의 인덱스
-      originalItem: notionData[originalIndex]  // 원본 데이터에서의 항목
-    });
     
     // 원본 데이터의 인덱스를 저장
     setSelectedIndex(originalIndex);
@@ -223,13 +276,38 @@ function GameStyleRadarChart() {
     setSearchTerm(e.target.value);
   };
 
-  // 캐릭터 목록에서 이름 표시용 함수
-  const getCharacterName = (item, index) => {
-    const titleProp = Object.values(item.properties).find(prop => prop.type === 'title');
-    if (titleProp && titleProp.title.length > 0) {
-      return titleProp.title.map(t => t.plain_text).join('');
+  // 설명 변경 핸들러
+  const handleDescChange = (e) => {
+    setDescription(e.target.value);
+  };
+
+  // 설명 저장 핸들러
+  const handleSaveDesc = async () => {
+    if (!notionData || notionData.length === 0 || selectedIndex < 0) {
+      return;
     }
-    return index !== undefined ? `캐릭터 #${index + 1}` : '이름 없음';
+
+    try {
+      setIsEditingDesc(false);
+      
+      const pageId = notionData[selectedIndex]?.id;
+      if (pageId) {
+        // 로딩 표시 등의 UI 업데이트 추가 가능
+        console.log('설명 저장 시작:', {
+          pageId,
+          description
+        });
+        
+        // Notion API를 통해 설명 업데이트
+        const result = await updatePageProperty(pageId, 'dec', description);
+        console.log('설명 저장 완료:', result);
+        
+        // 성공 알림 등 추가 가능
+      }
+    } catch (error) {
+      console.error('설명 저장 중 오류:', error);
+      // 오류 처리 (알림 등) 추가 가능
+    }
   };
 
   // Notion 데이터를 게임 스타일 차트 데이터로 변환하는 함수
@@ -379,14 +457,23 @@ function GameStyleRadarChart() {
           </div>
         </div>
         
-        {usingProxy && (
-          <div className="game-notice">
-            CORS 프록시를 통해 데이터를 불러왔습니다.
-          </div>
-        )}
+        {/* 환경 정보 표시 */}
+        <div className="game-notice">
+          {usingProxy ? (
+            <span className="env-proxy">CORS 프록시를 통해 데이터를 불러왔습니다.</span>
+          ) : (
+            <span className={environment.isProduction ? "env-production" : "env-development"}>
+              {environment.isProduction 
+                ? '프로덕션 환경 (Netlify Functions 사용)' 
+                : '개발 환경 (로컬 프록시 사용)'}
+            </span>
+          )}
+        </div>
         
         <div className="game-chart-wrapper">
-          <Radar data={chartData} options={chartOptions} />
+          {chartData && chartData.datasets && chartData.labels && (
+            <Radar data={chartData} options={chartOptions} />
+          )}
         </div>
         
         <div className="game-stats-container">
@@ -405,6 +492,41 @@ function GameStyleRadarChart() {
               </div>
             ))}
           </div>
+        </div>
+        {/* 캐릭터 설명 섹션 */}
+        <div className="character-description-section">
+          <div className="description-header">
+            <h3>캐릭터 설명</h3>
+            {!isEditingDesc ? (
+              <button 
+                className="edit-desc-button"
+                onClick={() => setIsEditingDesc(true)}
+              >
+                수정
+              </button>
+            ) : (
+              <button 
+                className="save-desc-button"
+                onClick={handleSaveDesc}
+              >
+                저장
+              </button>
+            )}
+          </div>
+          
+          {isEditingDesc ? (
+            <textarea
+              className="description-textarea"
+              value={description}
+              onChange={handleDescChange}
+              placeholder="캐릭터에 대한 설명을 입력하세요..."
+              rows={4}
+            />
+          ) : (
+            <div className="description-content">
+              {description ? description : '설명 없음'}
+            </div>
+          )}
         </div>
       </div>
       

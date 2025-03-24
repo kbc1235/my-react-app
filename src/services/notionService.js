@@ -1,5 +1,7 @@
+// 환경 변수 및 API 유틸리티 함수 임포트
+import { notionApiRequest } from '../utils/apiUtils';
+
 // Notion API 키 가져오기
-const NOTION_API_KEY = import.meta.env.VITE_NOTION_API_KEY;
 const DATABASE_ID = import.meta.env.VITE_NOTION_DATABASE_ID;
 
 /**
@@ -7,18 +9,11 @@ const DATABASE_ID = import.meta.env.VITE_NOTION_DATABASE_ID;
  */
 export const fetchNotionDatabase = async () => {
   try {
-    // Netlify Functions 사용 방식으로 변경 - CORS 오류 해결
-    const response = await fetch('/.netlify/functions/notion/databases/' + DATABASE_ID + '/query', {
+    // 환경에 맞는 API 호출 (apiUtils 사용)
+    const response = await notionApiRequest(`/databases/${DATABASE_ID}/query`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({}),
     });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP 오류! 상태: ${response.status}`);
-    }
     
     const data = await response.json();
     return data.results;
@@ -34,12 +29,8 @@ export const fetchNotionDatabase = async () => {
  */
 export const addNotionDatabaseItem = async (data) => {
   try {
-    // Netlify Functions 사용 방식으로 변경
-    const response = await fetch('/.netlify/functions/notion/pages', {
+    const response = await notionApiRequest('/pages', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({
         parent: {
           database_id: DATABASE_ID,
@@ -47,10 +38,6 @@ export const addNotionDatabaseItem = async (data) => {
         properties: data,
       }),
     });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP 오류! 상태: ${response.status}`);
-    }
     
     return await response.json();
   } catch (error) {
@@ -66,20 +53,12 @@ export const addNotionDatabaseItem = async (data) => {
  */
 export const updateNotionDatabaseItem = async (pageId, data) => {
   try {
-    // Netlify Functions 사용 방식으로 변경
-    const response = await fetch(`/.netlify/functions/notion/pages/${pageId}`, {
+    const response = await notionApiRequest(`/pages/${pageId}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({
         properties: data,
       }),
     });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP 오류! 상태: ${response.status}`);
-    }
     
     return await response.json();
   } catch (error) {
@@ -94,20 +73,12 @@ export const updateNotionDatabaseItem = async (pageId, data) => {
  */
 export const deleteNotionDatabaseItem = async (pageId) => {
   try {
-    // Netlify Functions 사용 방식으로 변경
-    const response = await fetch(`/.netlify/functions/notion/pages/${pageId}`, {
+    const response = await notionApiRequest(`/pages/${pageId}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({
         archived: true,
       }),
     });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP 오류! 상태: ${response.status}`);
-    }
     
     return await response.json();
   } catch (error) {
@@ -124,12 +95,8 @@ export const deleteNotionDatabaseItem = async (pageId) => {
  */
 export const addContentToPage = async (pageId, content) => {
   try {
-    // Netlify Functions 사용 방식으로 변경 - CORS 오류 해결
-    const response = await fetch(`/.netlify/functions/notion/blocks/${pageId}/children`, {
+    const response = await notionApiRequest(`/blocks/${pageId}/children`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({
         children: [
           {
@@ -150,10 +117,6 @@ export const addContentToPage = async (pageId, content) => {
       }),
     });
     
-    if (!response.ok) {
-      throw new Error(`HTTP 오류! 상태: ${response.status}`);
-    }
-    
     return await response.json();
   } catch (error) {
     console.error('Notion API 오류:', error);
@@ -169,12 +132,8 @@ export const addContentToPage = async (pageId, content) => {
  */
 export const addItemToDatabase = async (databaseId, properties) => {
   try {
-    // Netlify Functions 사용 방식으로 변경 - CORS 오류 해결
-    const response = await fetch('/.netlify/functions/notion/pages', {
+    const response = await notionApiRequest('/pages', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({
         parent: {
           database_id: databaseId,
@@ -183,13 +142,79 @@ export const addItemToDatabase = async (databaseId, properties) => {
       }),
     });
     
-    if (!response.ok) {
-      throw new Error(`HTTP 오류! 상태: ${response.status}`);
-    }
-    
     return await response.json();
   } catch (error) {
     console.error('Notion API 오류:', error);
+    throw error;
+  }
+};
+
+/**
+ * Notion 페이지의 특정 속성을 업데이트합니다.
+ * @param {string} pageId Notion 페이지 ID
+ * @param {string} propertyName 업데이트할 속성 이름
+ * @param {any} propertyValue 업데이트할 속성 값
+ * @param {string} propertyType 속성 타입 (text, number, select 등)
+ * @returns {Promise} API 응답
+ */
+export const updatePageProperty = async (pageId, propertyName, propertyValue, propertyType = 'rich_text') => {
+  try {
+    let propertyData = {};
+
+    // 속성 타입에 따라 다른 형식의 데이터 구성
+    switch (propertyType) {
+      case 'rich_text':
+        propertyData = {
+          rich_text: [
+            {
+              type: 'text',
+              text: {
+                content: propertyValue,
+              },
+            },
+          ],
+        };
+        break;
+      case 'title':
+        propertyData = {
+          title: [
+            {
+              type: 'text',
+              text: {
+                content: propertyValue,
+              },
+            },
+          ],
+        };
+        break;
+      case 'number':
+        propertyData = {
+          number: parseFloat(propertyValue),
+        };
+        break;
+      case 'select':
+        propertyData = {
+          select: {
+            name: propertyValue,
+          },
+        };
+        break;
+      default:
+        throw new Error(`지원하지 않는 속성 타입: ${propertyType}`);
+    }
+
+    const response = await notionApiRequest(`/pages/${pageId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        properties: {
+          [propertyName]: propertyData,
+        },
+      }),
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error('Notion 페이지 속성 업데이트 오류:', error);
     throw error;
   }
 }; 

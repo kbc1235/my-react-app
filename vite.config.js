@@ -20,5 +20,30 @@ export default defineConfig({
         },
       }
     }
+  },
+  build: {
+    // 청크 사이즈 및 분할 전략 조정
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'chart': ['chart.js', 'react-chartjs-2'],
+          'vendor': ['react', 'react-dom']
+        }
+      }
+    },
+    // 소스맵 생성
+    sourcemap: true,
+    // 최적화 옵션
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: false,
+        pure_funcs: ['console.log']
+      }
+    }
+  },
+  optimizeDeps: {
+    include: ['chart.js', 'react-chartjs-2']
   }
 })

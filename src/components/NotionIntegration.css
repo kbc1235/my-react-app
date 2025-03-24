@@ -155,6 +155,9 @@
   text-align: center;
   margin-bottom: 15px;
 }
+.table-input-container input,textarea{
+  color:#333;
+}
 
 .exercise-grid {
   display: grid;
@@ -179,6 +182,35 @@
   border: 1px solid #d8dee9;
   border-radius: 4px;
   font-family: inherit;
+}
+
+/* 메모 컨테이너 스타일 */
+.memo-container {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.memo-container label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #4c566a;
+}
+
+.memo-container textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d8dee9;
+  border-radius: 4px;
+  font-family: inherit;
+  resize: vertical;
+  background-color: white;
+}
+
+.memo-container textarea:focus {
+  border-color: #5e81ac;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(94, 129, 172, 0.2);
 }
 
 .checkbox-row {

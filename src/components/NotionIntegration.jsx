@@ -26,6 +26,8 @@ function NotionIntegration() {
     jerk: '',
     snatch: ''
   });
+  // 메모를 위한 상태 추가
+  const [memo, setMemo] = useState('');
 
   // 운동 기록 템플릿 추가
 //   const addWorkoutTemplate = () => {
@@ -358,6 +360,22 @@ function NotionIntegration() {
         }
       });
       
+      // 메모 속성 추가 (만약 memo 속성이 데이터베이스에 있다면)
+      if (databaseProperties['dec']) {
+        const type = databaseProperties['dec'];
+        if (type === 'rich_text' || type === 'text') {
+          properties['dec'] = {
+            rich_text: [
+              {
+                text: {
+                  content: memo
+                }
+              }
+            ]
+          };
+        }
+      }
+      
       const response = await addItemToDatabase(databaseId, properties);
       setResult({
         success: true,
@@ -375,6 +393,7 @@ function NotionIntegration() {
         jerk: '',
         snatch: ''
       });
+      setMemo(''); // 메모 초기화 추가
     } catch (err) {
       setError(err.message || '항목 추가 중 오류가 발생했습니다');
       setResult({ success: false });
@@ -449,6 +468,18 @@ function NotionIntegration() {
                 />
               </div>
             ))}
+          </div>
+          
+          {/* 메모 입력 영역 추가 */}
+          <div className="memo-container">
+            <label htmlFor="workout-memo">메모:</label>
+            <textarea
+              id="workout-memo"
+              value={memo}
+              onChange={(e) => setMemo(e.target.value)}
+              placeholder="운동에 대한 메모를 입력하세요"
+              rows={4}
+            />
           </div>
         </div>
       )}

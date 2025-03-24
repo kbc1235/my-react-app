@@ -2,6 +2,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 
+/* 기본 바디 스타일 재정의 */
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  line-height: 1.6;
+  color: #edf2f7;
+  background-color: #1a202c;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
 /* 게임 UI 전체 컨테이너 */
 .game-chart-container {
   background-color: #111827;
@@ -317,14 +328,120 @@
 
 /* 공지사항 */
 .game-notice {
-  margin: 1rem 0;
-  padding: 0.5rem;
-  background-color: rgba(0, 0, 0, 0.7);
-  border: 1px solid #ff6b6b;
-  border-radius: 0.25rem;
-  font-size: 0.8rem;
-  color: #ff6b6b;
+  margin: 10px 0;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 4px;
   text-align: center;
+  color: white;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.game-notice span {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: 500;
+  background-color: rgba(80, 120, 180, 0.8);
+}
+
+/* 환경에 따른 스타일 */
+.env-proxy {
+  background-color: rgba(230, 180, 70, 0.8) !important;
+}
+
+.env-development {
+  background-color: rgba(70, 150, 70, 0.8) !important;
+}
+
+.env-production {
+  background-color: rgba(100, 100, 200, 0.8) !important;
+}
+
+/* 캐릭터 설명 섹션 */
+.character-description-section {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 2px solid #4bd9fb;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(75, 217, 251, 0.2) inset;
+}
+
+.description-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.description-header h3 {
+  margin: 0;
+  color: #ffcd39;
+  font-size: 1.1rem;
+  text-shadow: 2px 2px 0 #000;
+  font-weight: 500;
+}
+
+.edit-desc-button, .save-desc-button {
+  background-color: #4bd9fb;
+  color: #111827;
+  border: 1px solid #4bd9fb;
+  border-radius: 4px;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.save-desc-button {
+  background-color: #6bc45a;
+  border-color: #6bc45a;
+}
+
+.edit-desc-button:hover {
+  background-color: #60e1ff;
+}
+
+.save-desc-button:hover {
+  background-color: #7cd66b;
+}
+
+.description-content {
+  min-height: 60px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  padding: 0.8rem;
+  color: #fff;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.description-textarea {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid #4bd9fb;
+  border-radius: 4px;
+  padding: 0.8rem;
+  color: #fff;
+  font-size: 0.9rem;
+  font-family: 'Noto Sans KR', sans-serif;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 100px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.description-textarea:focus {
+  outline: none;
+  border-color: #ffcd39;
+  box-shadow: 0 0 8px rgba(255, 205, 57, 0.5);
+}
+
+.description-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* 차트 래퍼 */
