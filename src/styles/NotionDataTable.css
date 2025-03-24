@@ -1,0 +1,78 @@
+.notion-data-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.notion-data-container h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+  text-align: center;
+}
+
+.proxy-notice {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #ffeeba;
+}
+
+.table-container {
+  overflow-x: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.notion-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.notion-table th {
+  background-color: #f0f0f0;
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: bold;
+  color: #333;
+  position: sticky;
+  top: 0;
+}
+
+.notion-table td {
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.notion-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.loading, .error, .no-data {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: #666;
+}
+
+.loading {
+  color: #4b6bfb;
+}
+
+.error {
+  color: #e74c3c;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .notion-table th, 
+  .notion-table td {
+    padding: 8px;
+    font-size: 14px;
+  }
+} 

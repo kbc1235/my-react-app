@@ -1,0 +1,70 @@
+.radar-chart-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.radar-chart-container h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+  text-align: center;
+}
+
+.proxy-notice {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #ffeeba;
+}
+
+.chart-description {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.chart-wrapper {
+  position: relative;
+  height: 500px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.loading, .error, .no-data {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: #666;
+}
+
+.loading {
+  color: #4b6bfb;
+}
+
+.error {
+  color: #e74c3c;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .chart-wrapper {
+    height: 350px;
+  }
+  
+  .radar-chart-container h2 {
+    font-size: 18px;
+  }
+} 
