@@ -9,6 +9,12 @@
   publish = "dist"
   framework = "vite"
 
+# Netlify Functions 환경 변수 설정
+[build.environment]
+  NOTION_API_KEY = "from_netlify_ui"
+  VITE_API_MODE = "production"
+  VITE_IS_NETLIFY = "true"
+
 [[redirects]]
   from = "/api/notion/*"
   to = "/.netlify/functions/notion/:splat"

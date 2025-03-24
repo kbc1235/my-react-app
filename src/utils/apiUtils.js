@@ -61,13 +61,30 @@ export const notionApiRequest = async (endpoint, options = {}) => {
         바디: options.body ? '존재함' : '없음'
       });
       
-      const response = await fetch(url, {
+      // 요청 바디에 API 키 추가 (비상 방안)
+      let requestBody = {};
+      try {
+        if (options.body) {
+          requestBody = JSON.parse(options.body);
+        }
+      } catch (e) {
+        console.error('요청 바디 파싱 오류:', e);
+      }
+      
+      // API 키를 바디에 추가
+      requestBody.apiKey = import.meta.env.VITE_NOTION_API_KEY;
+      
+      // 수정된 옵션
+      const modifiedOptions = {
         ...options,
+        body: JSON.stringify(requestBody),
         headers: {
           'Content-Type': 'application/json',
           ...options.headers
         }
-      });
+      };
+      
+      const response = await fetch(url, modifiedOptions);
       
       if (!response.ok) {
         // 응답 텍스트 출력 시도

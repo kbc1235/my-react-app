@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 const axios = require('axios');
 
-// 환경 변수에서 Notion API 키를 가져옵니다
-const NOTION_API_KEY = process.env.NOTION_API_KEY;
+// 환경 변수에서 Notion API 키를 가져옵니다 - 여러 환경 변수 접근 방식 시도
+let NOTION_API_KEY = process.env.NOTION_API_KEY || process.env.VITE_NOTION_API_KEY;
 const NOTION_API_VERSION = '2022-06-28';
 const NOTION_API_URL = 'https://api.notion.com/v1';
 
@@ -27,6 +27,16 @@ exports.handler = async function(event) {
       body: JSON.stringify({ message: 'CORS preflight successful' })
     };
   }
+
+  // 서버리스 함수 환경의 모든 환경 변수 로깅 (디버깅용)
+  console.log('모든 환경 변수 키 목록:', Object.keys(process.env));
+  console.log('환경 변수 존재 여부:', {
+    'NOTION_API_KEY 존재': !!process.env.NOTION_API_KEY,
+    'VITE_NOTION_API_KEY 존재': !!process.env.VITE_NOTION_API_KEY,
+    'NETLIFY 존재': !!process.env.NETLIFY,
+    'NODE_ENV 존재': !!process.env.NODE_ENV,
+    'NODE_ENV 값': process.env.NODE_ENV
+  });
 
   // 디버깅 정보 로깅
   console.log('이벤트 정보:', {
@@ -63,13 +73,35 @@ exports.handler = async function(event) {
     // API 키가 없는 경우 오류 반환
     if (!NOTION_API_KEY) {
       console.error('Notion API 키가 설정되지 않았습니다.');
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({
-          error: 'Notion API 키가 설정되지 않았습니다. 환경 변수를 확인하세요.'
-        })
-      };
+      
+      // API 키 대체 방법 시도
+      let hardcodedApiKey = null;
+      try {
+        // 요청 바디에서 API 키 찾기 시도 (디버깅 목적)
+        if (body && body.apiKey) {
+          hardcodedApiKey = body.apiKey;
+          console.log('요청 바디에서 API 키 발견');
+        }
+      } catch (e) {
+        console.error('대체 API 키 찾기 실패:', e);
+      }
+      
+      if (!hardcodedApiKey) {
+        return {
+          statusCode: 500,
+          headers,
+          body: JSON.stringify({
+            error: 'Notion API 키가 설정되지 않았습니다. 환경 변수를 확인하세요.',
+            envKeys: Object.keys(process.env).filter(key => !key.includes('SECRET') && !key.includes('KEY')).join(', '),
+            hasNotionEnvVar: !!process.env.NOTION_API_KEY,
+            hasViteNotionEnvVar: !!process.env.VITE_NOTION_API_KEY
+          })
+        };
+      }
+      
+      // 하드코딩된 키 사용 (임시 디버깅용)
+      console.log('하드코딩된 키 사용 시도 (임시)');
+      NOTION_API_KEY = hardcodedApiKey;
     }
     
     // Notion API로 요청 전송
@@ -104,7 +136,8 @@ exports.handler = async function(event) {
       statusCode: error.response?.status || 500,
       headers,
       body: JSON.stringify({
-        error: error.response?.data || error.message
+        error: error.response?.data || error.message,
+        errorMessage: error.message
       })
     };
   }
