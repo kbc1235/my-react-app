@@ -7,13 +7,11 @@ const DATABASE_ID = import.meta.env.VITE_NOTION_DATABASE_ID;
  */
 export const fetchNotionDatabase = async () => {
   try {
-    // 프록시 사용 방식으로 변경 - CORS 오류 해결
-    const response = await fetch('/api/notion/databases/' + DATABASE_ID + '/query', {
+    // Netlify Functions 사용 방식으로 변경 - CORS 오류 해결
+    const response = await fetch('/.netlify/functions/notion/databases/' + DATABASE_ID + '/query', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
       },
       body: JSON.stringify({}),
     });
@@ -36,13 +34,11 @@ export const fetchNotionDatabase = async () => {
  */
 export const addNotionDatabaseItem = async (data) => {
   try {
-    // 프록시 사용 방식으로 변경
-    const response = await fetch('/api/notion/pages', {
+    // Netlify Functions 사용 방식으로 변경
+    const response = await fetch('/.netlify/functions/notion/pages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
       },
       body: JSON.stringify({
         parent: {
@@ -70,13 +66,11 @@ export const addNotionDatabaseItem = async (data) => {
  */
 export const updateNotionDatabaseItem = async (pageId, data) => {
   try {
-    // 프록시 사용 방식으로 변경
-    const response = await fetch(`/api/notion/pages/${pageId}`, {
+    // Netlify Functions 사용 방식으로 변경
+    const response = await fetch(`/.netlify/functions/notion/pages/${pageId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
       },
       body: JSON.stringify({
         properties: data,
@@ -100,13 +94,11 @@ export const updateNotionDatabaseItem = async (pageId, data) => {
  */
 export const deleteNotionDatabaseItem = async (pageId) => {
   try {
-    // 프록시 사용 방식으로 변경
-    const response = await fetch(`/api/notion/pages/${pageId}`, {
+    // Netlify Functions 사용 방식으로 변경
+    const response = await fetch(`/.netlify/functions/notion/pages/${pageId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
       },
       body: JSON.stringify({
         archived: true,
@@ -132,13 +124,11 @@ export const deleteNotionDatabaseItem = async (pageId) => {
  */
 export const addContentToPage = async (pageId, content) => {
   try {
-    // 프록시 사용 방식으로 변경 - CORS 오류 해결
-    const response = await fetch(`/api/notion/blocks/${pageId}/children`, {
+    // Netlify Functions 사용 방식으로 변경 - CORS 오류 해결
+    const response = await fetch(`/.netlify/functions/notion/blocks/${pageId}/children`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
       },
       body: JSON.stringify({
         children: [
@@ -179,13 +169,11 @@ export const addContentToPage = async (pageId, content) => {
  */
 export const addItemToDatabase = async (databaseId, properties) => {
   try {
-    // 프록시 사용 방식으로 변경 - CORS 오류 해결
-    const response = await fetch('/api/notion/pages', {
+    // Netlify Functions 사용 방식으로 변경 - CORS 오류 해결
+    const response = await fetch('/.netlify/functions/notion/pages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
       },
       body: JSON.stringify({
         parent: {
