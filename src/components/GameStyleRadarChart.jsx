@@ -97,8 +97,8 @@ function GameStyleRadarChart() {
   const [characterClass, setCharacterClass] = useState('전사');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [usingProxy, setUsingProxy] = useState(false);
-  const [environment, setEnvironment] = useState({});
+
+
   const [statPoints, setStatPoints] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
   const [description, setDescription] = useState('');
@@ -152,8 +152,7 @@ function GameStyleRadarChart() {
       Legend
     );
     
-    // 환경 정보 설정
-    setEnvironment(getEnvironment());
+
   }, []);
 
   useEffect(() => {
@@ -167,7 +166,6 @@ function GameStyleRadarChart() {
         try {
           // 표준 서비스 사용 (로컬/Netlify 환경에 따라 자동 처리)
           result = await fetchNotionDatabase();
-          setUsingProxy(false);
         } catch (apiError) {
           console.error('기본 API 호출 실패, CORS 프록시로 시도합니다:', apiError);
           
@@ -175,7 +173,6 @@ function GameStyleRadarChart() {
           if (env.isDevelopment) {
             try {
               result = await fetchNotionDatabaseWithProxy();
-              setUsingProxy(true);
             } catch (corsError) {
               console.error('CORS 프록시 방식도 실패:', corsError);
               throw new Error('API 연결에 실패했습니다 (CORS 오류)');
@@ -951,16 +948,7 @@ function GameStyleRadarChart() {
           </div>
         </div>
         
-        {/* 환경 정보 표시 */}
-        {!usingProxy &&
-        <div className="game-notice">
-         <span className={environment.isProduction ? "env-production" : "env-development"}>
-              {environment.isProduction 
-                ? '프로덕션 환경 (Netlify Functions 사용)' 
-                : '개발 환경 (로컬 프록시 사용)'}
-            </span>
-        </div>
-        }
+      
        
         
         {/* 레이더 차트 영역 */}
