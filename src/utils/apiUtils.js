@@ -6,9 +6,7 @@ export const getEnvironment = () => {
   // .env 파일에서 환경 설정 읽기
   const apiMode = import.meta.env.VITE_API_MODE || 'development';
   const isNetlify = import.meta.env.VITE_IS_NETLIFY === 'true';
-  
-  console.log(`환경 설정: API 모드=${apiMode}, Netlify=${isNetlify}`);
-  
+
   return {
     isProduction: apiMode === 'production',
     isNetlify: isNetlify,
@@ -38,11 +36,9 @@ export const getApiEndpointPrefix = () => {
  * @returns {Promise<Response>} fetch 응답
  */
 export const notionApiRequest = async (endpoint, options = {}) => {
-  const env = getEnvironment();
   const prefix = getApiEndpointPrefix();
   const url = `${prefix}${endpoint}`;
   
-  console.log(`API 요청: ${url} (${env.apiMode} 모드)`);
   
   try {
     const apiKey = import.meta.env.VITE_NOTION_API_KEY;

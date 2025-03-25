@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Radar } from 'react-chartjs-2';
 import {
-  Chart as ChartJS,
+  Chart,
   RadialLinearScale,
   PointElement,
   LineElement,
@@ -12,6 +12,7 @@ import {
 import { fetchNotionDatabase, updatePageProperty } from '../services/notionService';
 import { fetchNotionDatabaseWithProxy } from '../services/notionCorsProxyService';
 import { getEnvironment } from '../utils/apiUtils';
+import ConfirmModal from './common/ConfirmModal';
 
 // Chart.js 컴포넌트 등록은 useEffect 내부로 이동
 
@@ -104,11 +105,45 @@ function GameStyleRadarChart() {
   const [isEditingDesc, setIsEditingDesc] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
+  // 회원 비교 기능을 위한 상태 추가
+  const [selectedCharacters, setSelectedCharacters] = useState([]);
+  const [isCompareMode, setIsCompareMode] = useState(false);
+  const [isCompareEnabled, setIsCompareEnabled] = useState(false);
+  
+  // 모달 관련 상태 추가
+  const [modalConfig, setModalConfig] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null,
+    keepSidebarOpen: true // 사이드바를 열린 상태로 유지할지 여부
+  });
+
+  // 모달 열기 함수
+  const openModal = (config) => {
+    setModalConfig({
+      isOpen: true,
+      title: config.title || '알림',
+      message: config.message,
+      type: config.type || 'info',
+      onConfirm: config.onConfirm || null,
+      confirmText: config.confirmText,
+      cancelText: config.cancelText,
+      keepSidebarOpen: config.keepSidebarOpen !== undefined ? config.keepSidebarOpen : true // 기본값은 사이드바 유지
+    });
+  };
+
+  // 모달 닫기 함수
+  const closeModal = () => {
+    setModalConfig(prev => ({ ...prev, isOpen: false }));
+    // 사이드바 상태는 변경하지 않음
+  };
 
   // Chart.js 컴포넌트 등록
   useEffect(() => {
     // 컴포넌트 마운트 시 Chart.js 등록
-    ChartJS.register(
+    Chart.register(
       RadialLinearScale,
       PointElement,
       LineElement,
@@ -161,7 +196,6 @@ function GameStyleRadarChart() {
         
         // 전체 데이터 저장
         setNotionData(result);
-        console.log('Notion 데이터 로드 완료, 항목 수:', result.length);
         
         // 첫 번째 항목 처리
         updateSelectedCharacter(result, 0);
@@ -181,6 +215,13 @@ function GameStyleRadarChart() {
   // 외부 클릭 감지 이벤트 리스너
   useEffect(() => {
     const handleOutsideClick = (event) => {
+      // 모달이 열려있을 때는 사이드바 닫기 이벤트를 처리하지 않음
+      if (modalConfig.isOpen) return;
+      
+      // 모달 요소 클릭 시 무시
+      const modalElement = document.querySelector('.confirm-modal');
+      if (modalElement && modalElement.contains(event.target)) return;
+      
       if (sidebarRef.current && !sidebarRef.current.contains(event.target) && isSidebarOpen) {
         setIsSidebarOpen(false);
       }
@@ -193,7 +234,7 @@ function GameStyleRadarChart() {
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
     };
-  }, [isSidebarOpen]);
+  }, [isSidebarOpen, modalConfig.isOpen]);
 
   // 사이드바 토글 함수
   const toggleSidebar = () => {
@@ -217,9 +258,7 @@ function GameStyleRadarChart() {
       setError('선택한 회원의 데이터가 유효하지 않습니다.');
       return;
     }
-    
-    console.log('회원 데이터 업데이트 시작:', { id: item.id, index });
-    
+        
     try {
       // 차트 데이터 변환
       const transformedData = transformDataForGameChart(item);
@@ -272,7 +311,47 @@ function GameStyleRadarChart() {
       const classes = ['직장인 과부화형', ' 육아맘 리커버리형', '바디프로젝트 형', '자기계발형', '공감커뮤니티형', '힐링 중심형'];
       setCharacterClass(classes[Math.floor(Math.random() * classes.length)]);
       
-      console.log('회원 데이터 업데이트 완료:', name);
+      // 현재 선택한 회원을 비교 대상 목록에 자동으로 추가
+      setSelectedCharacters(prev => {
+        // 이미 선택된 회원인지 확인
+        const isSelected = prev.some(char => char.id === item.id);
+        
+        // 이미 선택되어 있다면 기존 목록 유지
+        if (isSelected) {
+          return prev;
+        }
+        
+        // 최대 4명까지만 선택 가능하도록 제한
+        if (prev.length >= 4) {
+          // 가장 오래된 항목(첫 번째 항목) 제거하고 새 항목 추가
+          const newSelection = [...prev.slice(1), {
+            id: item.id,
+            name: name,
+            index: index,
+            data: transformedData.chartData.datasets[0].data,
+            labels: transformedData.chartData.labels
+          }];
+          
+          // 4명 초과 시 안내 메시지
+          openModal({
+            title: '선택 제한',
+            message: '최대 4명까지만 비교할 수 있어 가장 먼저 선택한 회원이 제외되었습니다.',
+            type: 'info'
+          });
+          
+          return newSelection;
+        }
+        
+        // 새 항목 추가
+        return [...prev, {
+          id: item.id,
+          name: name,
+          index: index,
+          data: transformedData.chartData.datasets[0].data,
+          labels: transformedData.chartData.labels
+        }];
+      });
+      
     } catch (error) {
       console.error('회원 데이터 업데이트 중 오류 발생:', error);
       setError(`데이터 처리 중 오류가 발생했습니다: ${error.message}`);
@@ -355,6 +434,7 @@ function GameStyleRadarChart() {
     const labels = [];
     const dataValues = [];
     const statPoints = {}; // 각 스탯의 포인트
+    let maxValue = 0; // 최대값 추적
 
     // 속성을 반복하여 숫자 값만 추출
     Object.entries(item.properties).forEach(([key, property]) => {
@@ -365,10 +445,13 @@ function GameStyleRadarChart() {
         const value = property.number || 0;
         dataValues.push(value);
         
+        // 최대값 추적
+        if (value > maxValue) maxValue = value;
+        
         // 스탯 포인트 저장
         statPoints[label] = {
           value,
-          max: 100
+          max: Math.max(100, maxValue) // 최대값이 100 이상이면 그 값을 사용
         };
       }
     });
@@ -384,21 +467,25 @@ function GameStyleRadarChart() {
         const value = Math.floor(Math.random() * 70) + 30; // 30-100 사이의 랜덤 값
         dataValues.push(value);
         
+        // 최대값 추적
+        if (value > maxValue) maxValue = value;
+        
         // 스탯 포인트 저장
         statPoints[label] = {
           value,
-          max: 100
+          max: Math.max(100, maxValue) // 최대값이 100 이상이면 그 값을 사용
         };
       }
     }
 
+    // 스케일링 제거, 원본 데이터 값 사용
     return {
       chartData: {
         labels,
         datasets: [
           {
             label: '회원 스탯',
-            data: dataValues,
+            data: dataValues, // 원본 데이터 값 사용
             backgroundColor: 'rgba(75, 217, 251, 0.5)',
             borderColor: 'rgba(75, 217, 251, 1)',
             borderWidth: 2,
@@ -408,6 +495,7 @@ function GameStyleRadarChart() {
             pointHoverBorderColor: 'rgba(255, 206, 86, 1)',
             pointRadius: 5,
             pointHoverRadius: 7,
+            fill: true
           }
         ],
       },
@@ -417,6 +505,8 @@ function GameStyleRadarChart() {
 
   // 차트 옵션 설정
   const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
     scales: {
       r: {
         angleLines: {
@@ -425,13 +515,19 @@ function GameStyleRadarChart() {
         },
         grid: {
           color: 'rgba(75, 217, 251, 0.2)',
+          circular: true
         },
+        beginAtZero: true,
         suggestedMin: 0,
         suggestedMax: 100,
         ticks: {
           backdropColor: 'transparent',
           color: 'rgba(255, 255, 255, 0.8)',
           z: 1,
+          stepSize: 20,
+          font: {
+            size: 10
+          }
         },
         pointLabels: {
           color: 'rgba(255, 255, 255, 0.8)',
@@ -465,8 +561,287 @@ function GameStyleRadarChart() {
         }
       }
     },
+    elements: {
+      line: {
+        tension: 0.1,
+        borderWidth: 2
+      },
+      point: {
+        radius: 4,
+        hitRadius: 10,
+        hoverRadius: 6
+      }
+    }
+  };
+
+  // 회원 체크박스 토글 처리 함수 수정
+  const handleToggleCharacterSelect = (item, index) => {
+    const originalIndex = notionData.findIndex(dataItem => dataItem.id === item.id);
+    const characterName = getCharacterName(item, index);
+    
+    // 현재 표시 중인 회원은 체크 해제 불가능
+    if (item.id === notionData[selectedIndex]?.id) {
+      const isSelected = selectedCharacters.some(char => char.id === item.id);
+      // 이미 선택되어 있지 않은 경우에만 추가 (일반적으로 이 경우는 없어야 함)
+      if (!isSelected) {
+        setSelectedCharacters(prev => [
+          ...prev, 
+          { 
+            id: item.id, 
+            name: characterName,
+            index: originalIndex,
+            data: transformDataForGameChart(notionData[originalIndex]).chartData.datasets[0].data,
+            labels: transformDataForGameChart(notionData[originalIndex]).chartData.labels
+          }
+        ]);
+      } else {
+        // 이미 선택된 경우, 체크 해제 시도 시 경고 메시지
+        openModal({
+          title: '제거 불가',
+          message: '현재 보고 있는 회원은 비교 대상에서 제외할 수 없습니다.',
+          type: 'warning'
+        });
+      }
+      return;
+    }
+    
+    setSelectedCharacters(prev => {
+      // 이미 선택된 회원인지 확인
+      const isSelected = prev.some(char => char.id === item.id);
+      
+      if (isSelected) {
+        // 선택 해제
+        return prev.filter(char => char.id !== item.id);
+      } else {
+        // 최대 4명까지만 선택 가능
+        if (prev.length >= 4) {
+          // alert 대신 모달 사용
+          openModal({
+            title: '선택 제한',
+            message: '최대 4명까지만 비교할 수 있습니다.',
+            type: 'warning'
+          });
+          return prev;
+        }
+        
+        // 새로운 회원 선택시 데이터 변환
+        const transformedData = transformDataForGameChart(notionData[originalIndex]);
+        
+        // 선택 추가
+        return [...prev, { 
+          id: item.id, 
+          name: characterName,
+          index: originalIndex,
+          data: transformedData.chartData.datasets[0].data,
+          labels: transformedData.chartData.labels
+        }];
+      }
+    });
+  };
+
+  // 비교 모드 토글 함수 수정
+  const toggleCompareMode = () => {
+    if (selectedCharacters.length < 2) {
+      // alert 대신 모달 사용
+      openModal({
+        title: '회원 선택 필요',
+        message: '비교하려면 최소 2명 이상 선택해야 합니다.',
+        type: 'info'
+      });
+      return;
+    }
+    
+    setIsCompareMode(!isCompareMode);
+  };
+
+  // 비교 모드 활성화 상태 토글 함수 추가
+  const toggleCompareEnabled = () => {
+    const newState = !isCompareEnabled;
+    setIsCompareEnabled(newState);
+    
+    // 비교 모드 비활성화 시 선택 상태 및 비교 모드 초기화
+    if (!newState) {
+      setIsCompareMode(false);
+      // 현재 선택된 회원만 유지하고 나머지는 초기화
+      const currentCharacter = selectedCharacters.find(char => 
+        char.id === notionData[selectedIndex]?.id
+      );
+      setSelectedCharacters(currentCharacter ? [currentCharacter] : []);
+    }
+  };
+
+  // 비교 차트 데이터 생성 함수
+  const createCompareChartData = () => {
+    if (selectedCharacters.length < 2) return null;
+    
+    // 모든 선택된 회원의 레이블을 합치고 중복 제거
+    const allLabels = [...new Set(
+      selectedCharacters.flatMap(char => char.labels)
+    )];
+    
+    // 데이터의 최대값 찾기 (모든 회원 데이터 중)
+    let maxValue = 0;
+    selectedCharacters.forEach(char => {
+      const charMax = Math.max(...char.data);
+      if (charMax > maxValue) maxValue = charMax;
+    });
+    
+    // 각 회원별 데이터셋 생성
+    const colors = [
+      { bg: 'rgba(255, 206, 86, 0.5)', border: 'rgba(255, 206, 86, 1)' },
+      { bg: 'rgba(123, 239, 178, 0.5)', border: 'rgba(123, 239, 178, 1)' },
+      { bg: 'rgba(255, 99, 132, 0.5)', border: 'rgba(255, 99, 132, 1)' },
+      { bg: 'rgba(75, 217, 251, 0.5)', border: 'rgba(75, 217, 251, 1)' } // 현재 회원은 항상 이 색상 사용
+    ];
+    
+    // 현재 선택된 회원을 가장 마지막에 렌더링하도록 데이터 재정렬
+    const reorderedCharacters = [...selectedCharacters].sort((a, b) => {
+      // 현재 보고 있는 회원은 항상 마지막으로
+      if (a.id === notionData[selectedIndex]?.id) return 1;
+      if (b.id === notionData[selectedIndex]?.id) return -1;
+      return 0;
+    });
+    
+    const datasets = reorderedCharacters.map((char, index) => {
+      // 현재 보고 있는 회원인지 확인
+      const isCurrentCharacter = char.id === notionData[selectedIndex]?.id;
+      const colorIndex = isCurrentCharacter ? 3 : index % 3; // 현재 회원은 항상 마지막 색상 사용
+      
+      // 모든 레이블에 맞게 데이터 재구성
+      const data = allLabels.map(label => {
+        const labelIndex = char.labels.indexOf(label);
+        // 데이터가 있으면 해당 값 사용, 없으면 0
+        return labelIndex >= 0 ? char.data[labelIndex] : 0;
+      });
+      
+      return {
+        label: isCurrentCharacter ? `${char.name} (현재)` : char.name,
+        data: data,
+        backgroundColor: colors[colorIndex].bg,
+        borderColor: colors[colorIndex].border,
+        borderWidth: isCurrentCharacter ? 3 : 2,
+        pointBackgroundColor: colors[colorIndex].border,
+        pointBorderColor: '#000',
+        pointRadius: isCurrentCharacter ? 5 : 4,
+        pointHoverRadius: isCurrentCharacter ? 8 : 6,
+        order: isCurrentCharacter ? 1 : 2,
+        fill: true
+      };
+    });
+    
+    return {
+      labels: allLabels,
+      datasets
+    };
+  };
+
+  // 비교 모드 차트 옵션
+  const compareChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: {
+        top: 5,
+        bottom: 25,
+        left: 5,
+        right: 5
+      }
+    },
+    scales: {
+      r: {
+        angleLines: {
+          display: true,
+          color: 'rgba(75, 217, 251, 0.1)'
+        },
+        grid: {
+          color: 'rgba(75, 217, 251, 0.1)',
+          circular: true
+        },
+        beginAtZero: true,
+        suggestedMin: 0,
+        suggestedMax: 100,
+        ticks: {
+          backdropColor: 'transparent',
+          display: false,
+          stepSize: 20,
+          z: 1,
+          font: {
+            size: 10
+          }
+        },
+        pointLabels: {
+          color: 'rgba(255, 255, 255, 0.8)',
+          font: {
+            size: 11,
+            family: '"Noto Sans KR", sans-serif',
+          },
+          padding: 5,
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        position: 'bottom',
+        align: 'center',
+        labels: {
+          color: 'rgba(255, 255, 255, 0.8)',
+          boxWidth: 12,
+          padding: 10,
+          font: {
+            size: 11,
+            family: '"Noto Sans KR", sans-serif',
+          },
+          filter: () => {
+            return true;
+          },
+          generateLabels: (chart) => {
+            const defaultLabels = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+            
+            return defaultLabels.map(label => {
+              if (label.text.includes('(현재)')) {
+                return {
+                  ...label,
+                  fontStyle: 'bold',
+                  lineWidth: 3
+                };
+              }
+              return label;
+            });
+          }
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleFont: {
+          family: '"Noto Sans KR", sans-serif',
+          size: 12
+        },
+        bodyFont: {
+          family: '"Noto Sans KR", sans-serif',
+          size: 12
+        },
+        callbacks: {
+          title: (tooltipItems) => {
+            return `${tooltipItems[0].label}`;
+          },
+          label: (context) => {
+            const label = context.dataset.label;
+            const value = context.raw;
+            return `${label}: ${value}`;
+          }
+        }
+      }
+    },
+    elements: {
+      line: {
+        tension: 0.2,
+        borderWidth: 2
+      },
+      point: {
+        hitRadius: 10,
+        hoverRadius: 7
+      }
+    }
   };
 
   // 로딩 및 에러 화면
@@ -554,8 +929,58 @@ function GameStyleRadarChart() {
         
         {/* 레이더 차트 영역 */}
         <div className="radar-chart-wrapper">
-          {chartData && chartData.datasets && chartData.labels && (
-            <Radar data={chartData} options={chartOptions} />
+          {isCompareMode ? (
+            // 비교 모드 차트
+            <div className="compare-view">
+              <div className="compare-view-header">
+                <h3 className="compare-title">회원 비교 차트</h3>
+                <div className="selected-characters-list">
+                  {selectedCharacters.map((char, index) => (
+                    <div 
+                      key={char.id} 
+                      className={`selected-character-badge ${char.id === notionData[selectedIndex]?.id ? 'current-character' : ''}`}
+                      style={{borderColor: ['rgba(75, 217, 251, 1)', 'rgba(255, 206, 86, 1)', 'rgba(123, 239, 178, 1)', 'rgba(255, 99, 132, 1)'][index % 4]}}
+                    >
+                      {char.name}
+                      {char.id === notionData[selectedIndex]?.id && (
+                        <span className="current-indicator" title="현재 보고 있는 회원">
+                          <i className="fa fa-eye"></i>
+                        </span>
+                      )}
+                      <button 
+                        className="remove-character" 
+                        onClick={() => {
+                          if (char.id === notionData[selectedIndex]?.id) {
+                            openModal({
+                              title: '제거 불가',
+                              message: '현재 보고 있는 회원은 비교 대상에서 제외할 수 없습니다.',
+                              type: 'warning'
+                            });
+                            return;
+                          }
+                          
+                          setSelectedCharacters(prev => prev.filter(c => c.id !== char.id));
+                          if (selectedCharacters.length <= 2) setIsCompareMode(false);
+                        }}
+                        disabled={char.id === notionData[selectedIndex]?.id}
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="compare-chart-container">
+                {createCompareChartData() && (
+                  <Radar data={createCompareChartData()} options={compareChartOptions} />
+                )}
+              </div>
+            </div>
+          ) : (
+            // 기존 단일 차트
+            chartData && chartData.datasets && chartData.labels && (
+              <Radar data={chartData} options={chartOptions} />
+            )
           )}
         </div>
         
@@ -606,6 +1031,19 @@ function GameStyleRadarChart() {
       <div className={`character-sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
         <h3 className="sidebar-title">회원 목록</h3>
         
+        {/* 비교 모드 스위치 추가 */}
+        <div className="compare-switch-container">
+          <span className="compare-switch-label">비교하기</span>
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={isCompareEnabled}
+              onChange={toggleCompareEnabled}
+            />
+            <span className="slider round"></span>
+          </label>
+        </div>
+        
         <div className="search-box">
           <input
             type="text"
@@ -620,18 +1058,68 @@ function GameStyleRadarChart() {
           {filteredCharacters.map((item, index) => (
             <div
               key={item.id}
-              className={`character-item ${notionData[selectedIndex]?.id === item.id ? 'active' : ''}`}
-              onClick={() => handleCharacterSelect(index)}
+              className={`character-item ${notionData[selectedIndex]?.id === item.id ? 'active' : ''} ${selectedCharacters.some(char => char.id === item.id) ? 'selected-for-compare' : ''}`}
             >
-              {getCharacterName(item, index)}
+              <div 
+                className="character-item-content" 
+                onClick={() => handleCharacterSelect(index)}
+              >
+                {getCharacterName(item, index)}
+              </div>
+              {isCompareEnabled && (
+                <div className="character-select-checkbox">
+                  <input
+                    type="checkbox"
+                    id={`character-checkbox-${item.id}`}
+                    checked={selectedCharacters.some(char => char.id === item.id)}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      handleToggleCharacterSelect(item, index);
+                    }}
+                    title="비교 대상으로 선택"
+                    disabled={item.id === notionData[selectedIndex]?.id}
+                  />
+                  <label 
+                    htmlFor={`character-checkbox-${item.id}`} 
+                    className={`custom-checkbox ${item.id === notionData[selectedIndex]?.id ? 'locked' : ''}`}
+                    title={item.id === notionData[selectedIndex]?.id ? '현재 보고 있는 회원은 항상 비교 대상에 포함됩니다' : '비교 대상으로 선택'}
+                    onClick={(e) => e.stopPropagation()}
+                  ></label>
+                </div>
+              )}
             </div>
           ))}
         </div>
         
         <div className="sidebar-footer">
-          <p>여기에는 뭐가 들어가야 하나 고민중</p>
+          {isCompareEnabled && (
+            <div className="compare-controls">
+              <div className="selected-count">
+                {selectedCharacters.length > 0 ? `${selectedCharacters.length}명 선택됨 (최대 4명)` : '비교할 회원을 선택하세요'}
+              </div>
+              <button 
+                className={`compare-toggle-button ${isCompareMode ? 'active' : ''}`}
+                onClick={toggleCompareMode}
+                disabled={selectedCharacters.length < 2}
+              >
+                {isCompareMode ? '비교 모드 종료' : '비교 시작'}
+              </button>
+            </div>
+          )}
         </div>
       </div>
+      
+      {/* 컨펌 모달 컴포넌트 추가 */}
+      <ConfirmModal
+        isOpen={modalConfig.isOpen}
+        onClose={closeModal}
+        onConfirm={modalConfig.onConfirm}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        type={modalConfig.type}
+        confirmText={modalConfig.confirmText}
+        cancelText={modalConfig.cancelText}
+      />
     </div>
   );
 }

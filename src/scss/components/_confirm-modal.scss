@@ -1,0 +1,164 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-container {
+  width: 100%;
+  max-width: 450px;
+  background-color: $color-black;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-lg;
+  overflow: hidden;
+  animation: slideIn 0.3s ease;
+  border: $border-width-thin solid $color-border;
+  
+  // 모달 타입별 스타일
+  &.info {
+    border-top: 4px solid $color-accent;
+    .modal-icon i {
+      color: $color-accent;
+    }
+  }
+  
+  &.warning {
+    border-top: 4px solid #ffd166;
+    .modal-icon i {
+      color: #ffd166;
+    }
+  }
+  
+  &.error {
+    border-top: 4px solid #ff6b6b;
+    .modal-icon i {
+      color: #ff6b6b;
+    }
+  }
+  
+  &.success {
+    border-top: 4px solid #4caf50;
+    .modal-icon i {
+      color: #4caf50;
+    }
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md $spacing-lg;
+  border-bottom: $border-width-thin solid $color-border;
+  
+  h3 {
+    margin: 0;
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    font-size: $font-size-lg;
+    color: $color-text-secondary;
+    cursor: pointer;
+    transition: color $transition-base;
+    
+    &:hover {
+      color: $color-text-primary;
+    }
+  }
+}
+
+.modal-body {
+  padding: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  
+  .modal-icon {
+    font-size: 48px;
+    margin-bottom: $spacing-md;
+    
+    i {
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+    }
+  }
+  
+  .modal-message {
+    font-size: $font-size-base;
+    line-height: 1.6;
+    color: $color-text-secondary;
+    margin: 0;
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg $spacing-lg;
+  
+  button {
+    min-width: 100px;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+    cursor: pointer;
+    transition: all $transition-base;
+  }
+  
+  .confirm-button {
+    background-color: $color-accent;
+    color: $color-black;
+    border: none;
+    
+    &:hover {
+      background-color: darken($color-accent, 10%);
+      transform: translateY(-2px);
+    }
+  }
+  
+  .cancel-button {
+    background-color: transparent;
+    color: $color-text-secondary;
+    border: $border-width-thin solid $color-border;
+    
+    &:hover {
+      background-color: rgba($color-border, 0.2);
+      color: $color-text-primary;
+    }
+  }
+}
+
+// 애니메이션
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(-20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 
