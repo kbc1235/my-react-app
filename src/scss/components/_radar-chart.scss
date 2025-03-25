@@ -29,6 +29,12 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
+  padding-right: 260px;
+  
+  @include respond-to(md) {
+    padding-right: 0;
+    margin-bottom: 60px;
+  }
 }
 
 // 캐릭터 정보 영역
@@ -236,19 +242,39 @@
 
 // 캐릭터 목록 사이드바 (fixed 형식으로 변경)
 .character-sidebar {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   width: 250px;
-  height: 100%;
+  height: 100vh;
   background-color: $color-black;
   border-left: $border-width-thin solid $color-border;
   z-index: 100;
   overflow-y: auto;
   padding-top: $spacing-base;
   
+  .sidebar-title {
+    padding: 0 $spacing-md $spacing-md;
+    margin-bottom: $spacing-md;
+    font-size: $font-size-lg;
+    border-bottom: $border-width-thin solid $color-border;
+  }
+  
+  .search-box {
+    padding: 0 $spacing-md $spacing-md;
+    
+    .search-input {
+      width: 100%;
+      padding: $spacing-sm;
+      background-color: $color-dark-bg;
+      border: $border-width-thin solid $color-border;
+      border-radius: $border-radius-sm;
+      color: $color-text-primary;
+    }
+  }
+  
   .character-list {
-    max-height: calc(100vh - 120px);
+    max-height: calc(100vh - 160px);
     overflow-y: auto;
     @include custom-scrollbar;
   }
@@ -267,6 +293,14 @@
       background-color: rgba($color-accent, 0.2);
       border-left: 3px solid $color-accent;
     }
+  }
+  
+  .sidebar-footer {
+    padding: $spacing-md;
+    font-size: $font-size-xs;
+    color: $color-text-secondary;
+    border-top: $border-width-thin solid $color-border;
+    margin-top: $spacing-md;
   }
 }
 

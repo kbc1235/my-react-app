@@ -141,7 +141,7 @@ function GameStyleRadarChart() {
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        setIsCharacterListOpen(false);
+        // 사이드바가 고정형이므로 외부 클릭 시 닫을 필요 없음
       }
     };
 
