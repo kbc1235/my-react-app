@@ -18,6 +18,7 @@
   @include respond-to(md) {
     padding: $spacing-base;
     margin: $spacing-base auto;
+    flex-direction: column;
   }
 }
 
@@ -26,6 +27,8 @@
   flex: 1;
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
 }
 
 // 캐릭터 정보 영역
@@ -48,8 +51,8 @@
 
 // 캐릭터 초상화
 .character-portrait {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   background-color: #222;
   border: $border-width-thin solid $color-accent;
   border-radius: $border-radius-circle;
@@ -229,4 +232,94 @@
   font-size: $font-size-base;
   font-weight: $font-weight-heavy;
   color: $color-accent;
+}
+
+// 캐릭터 목록 사이드바 (fixed 형식으로 변경)
+.character-sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 250px;
+  height: 100%;
+  background-color: $color-black;
+  border-left: $border-width-thin solid $color-border;
+  z-index: 100;
+  overflow-y: auto;
+  padding-top: $spacing-base;
+  
+  .character-list {
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    @include custom-scrollbar;
+  }
+  
+  .character-item {
+    padding: $spacing-md;
+    cursor: pointer;
+    transition: all $transition-base;
+    border-bottom: $border-width-thin solid $color-border-light;
+    
+    &:hover {
+      background-color: $color-card-bg;
+    }
+    
+    &.active {
+      background-color: rgba($color-accent, 0.2);
+      border-left: 3px solid $color-accent;
+    }
+  }
+}
+
+// 레이더 차트 영역
+.radar-chart-wrapper {
+  width: 100%;
+  min-height: 400px;
+  margin: 0 auto $spacing-xl;
+  position: relative;
+  
+  canvas {
+    max-width: 100%;
+    height: auto !important;
+  }
+}
+
+// 스탯 정보 영역
+.stat-info-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: $spacing-base;
+  background-color: $color-card-bg;
+  border-radius: $border-radius-md;
+  padding: $spacing-lg;
+  margin-top: $spacing-lg;
+  
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: $spacing-md;
+    background-color: rgba($color-dark-bg, 0.5);
+    border-radius: $border-radius-sm;
+    border: $border-width-thin solid $color-border;
+    
+    .stat-name {
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+      margin-bottom: $spacing-xs;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .stat-value {
+      font-size: $font-size-lg;
+      font-weight: $font-weight-bold;
+      color: $color-accent;
+    }
+    
+    .stat-ratio {
+      font-size: $font-size-xs;
+      color: $color-text-muted;
+      margin-top: $spacing-xs;
+    }
+  }
 } 

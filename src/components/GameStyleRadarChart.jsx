@@ -60,7 +60,6 @@ function GameStyleRadarChart() {
   const [environment, setEnvironment] = useState({});
   const [statPoints, setStatPoints] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
-  const [isCharacterListOpen, setIsCharacterListOpen] = useState(false);
   const [description, setDescription] = useState('');
   const [isEditingDesc, setIsEditingDesc] = useState(false);
   const sidebarRef = useRef(null);
@@ -260,14 +259,6 @@ function GameStyleRadarChart() {
     
     // 선택된 캐릭터 데이터 업데이트
     updateSelectedCharacter(notionData, originalIndex);
-    
-    // 모바일에서 사이드바 닫기
-    setIsCharacterListOpen(false);
-  };
-
-  // 사이드바 토글 핸들러
-  const toggleCharacterList = () => {
-    setIsCharacterListOpen(!isCharacterListOpen);
   };
 
   // 검색어 변경 핸들러
@@ -446,20 +437,13 @@ function GameStyleRadarChart() {
           <div className="character-details">
             <h2>{characterName} <span className="character-level">Lv.{level}</span></h2>
             <p className="character-class">{characterClass}</p>
-            
-            <button 
-              className="character-select-button" 
-              onClick={toggleCharacterList}
-            >
-              {isCharacterListOpen ? '목록 닫기' : '캐릭터 목록 보기'}
-            </button>
           </div>
         </div>
         
         {/* 환경 정보 표시 */}
         <div className="game-notice">
           {usingProxy ? (
-            <span className="env-proxy">CORS 프록시를 통해 데이터를 불러왔습니다.</span>
+            <span className="env-proxy">프로젝션 환경 (Netlify Functions 사용)</span>
           ) : (
             <span className={environment.isProduction ? "env-production" : "env-development"}>
               {environment.isProduction 
@@ -469,112 +453,84 @@ function GameStyleRadarChart() {
           )}
         </div>
         
-        <div className="game-chart-wrapper">
+        {/* 레이더 차트 영역 */}
+        <div className="radar-chart-wrapper">
           {chartData && chartData.datasets && chartData.labels && (
             <Radar data={chartData} options={chartOptions} />
           )}
         </div>
         
-        <div className="game-stats-container">
-          <h3>스탯 정보</h3>
-          <div className="game-stats-grid">
-            {Object.entries(statPoints).map(([stat, data]) => (
-              <div key={stat} className="stat-item">
-                <div className="stat-name">{stat}</div>
-                <div className="stat-bar-container">
-                  <div 
-                    className="stat-bar" 
-                    style={{width: `${(data.value / data.max) * 100}%`}}
-                  ></div>
-                </div>
-                <div className="stat-value">{data.value}/{data.max}</div>
-              </div>
-            ))}
-          </div>
+        {/* 스탯 정보 영역 */}
+        <div className="stat-info-section">
+          {Object.entries(statPoints).map(([stat, data]) => (
+            <div key={stat} className="stat-item">
+              <div className="stat-name">{stat}</div>
+              <div className="stat-value">{data.value}</div>
+              <div className="stat-ratio">{data.value}/{data.max}</div>
+            </div>
+          ))}
         </div>
+        
         {/* 캐릭터 설명 섹션 */}
         <div className="character-description-section">
           <div className="description-header">
             <h3>캐릭터 설명</h3>
             {!isEditingDesc ? (
-              <button 
-                className="edit-desc-button"
-                onClick={() => setIsEditingDesc(true)}
-              >
-                수정
+              <button className="edit-button" onClick={() => setIsEditingDesc(true)}>
+                편집
               </button>
             ) : (
-              <button 
-                className="save-desc-button"
-                onClick={handleSaveDesc}
-              >
+              <button className="save-button" onClick={handleSaveDesc}>
                 저장
               </button>
             )}
           </div>
           
           {isEditingDesc ? (
-            <textarea
-              className="description-textarea"
+            <textarea 
+              className="description-editor"
               value={description}
               onChange={handleDescChange}
-              placeholder="캐릭터에 대한 설명을 입력하세요..."
-              rows={4}
+              placeholder="캐릭터 설명을 입력하세요..."
             />
           ) : (
             <div className="description-content">
-              {description ? description : '설명 없음'}
+              {description || "캐릭터 설명이 등록되지 않았습니다."}
             </div>
           )}
         </div>
       </div>
       
-      {/* 오른쪽 사이드바 - 캐릭터 선택 */}
-      <div ref={sidebarRef} className={`character-sidebar ${isCharacterListOpen ? 'open' : 'closed'}`}>
-        <div className="sidebar-header">
-          <h3>캐릭터 목록</h3>
-          <button onClick={() => setIsCharacterListOpen(false)} className="close-sidebar-button">×</button>
-        </div>
+      {/* 캐릭터 목록 사이드바 (fixed 형식) */}
+      <div className="character-sidebar" ref={sidebarRef}>
+        <h3 className="sidebar-title">캐릭터 목록</h3>
         
-        <div className="search-container">
+        <div className="search-box">
           <input
             type="text"
-            placeholder="캐릭터 검색..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="character-search-input"
+            placeholder="캐릭터 검색..."
+            className="search-input"
           />
-          {searchTerm && (
-            <button 
-              className="clear-search-button" 
-              onClick={() => setSearchTerm('')}
-            >
-              ×
-            </button>
-          )}
         </div>
         
         <div className="character-list">
-          {filteredCharacters.length > 0 ? (
-            filteredCharacters.map((item, index) => (
-              <div 
-                key={item.id} 
-                className={`character-list-item ${notionData[selectedIndex]?.id === item.id ? 'selected' : ''}`}
-                onClick={() => handleCharacterSelect(index)}
-              >
-                <span className="character-list-name">{getCharacterName(item, index)}</span>
-              </div>
-            ))
-          ) : (
-            <div className="no-search-results">
-              검색 결과가 없습니다.
+          {filteredCharacters.map((item, index) => (
+            <div
+              key={item.id}
+              className={`character-item ${notionData[selectedIndex]?.id === item.id ? 'active' : ''}`}
+              onClick={() => handleCharacterSelect(index)}
+            >
+              {getCharacterName(item, index)}
             </div>
-          )}
+          ))}
+        </div>
+        
+        <div className="sidebar-footer">
+          <p>캐릭터는 메모가 가능하다</p>
         </div>
       </div>
-      
-      {/* 모바일용 오버레이 */}
-      {isCharacterListOpen && <div className="sidebar-overlay" onClick={() => setIsCharacterListOpen(false)}></div>}
     </div>
   );
 }
