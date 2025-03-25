@@ -17,7 +17,7 @@ import { getEnvironment } from '../utils/apiUtils';
 
 // 게임 관련 스탯 이름 매핑
 const STAT_NAMES = {
-  'title': '캐릭터명',
+  'title': '회원명',
   'number': '수치',
   'date': '날짜',
   'select': '선택',
@@ -160,12 +160,12 @@ function GameStyleRadarChart() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // 선택된 캐릭터 업데이트 함수
+  // 선택된 회원 업데이트 함수
   const updateSelectedCharacter = (data, index) => {
     // 데이터 검증
     if (!data || !Array.isArray(data) || index < 0 || index >= data.length) {
       console.error('유효하지 않은 데이터 또는 인덱스:', { dataLength: data?.length, index });
-      setError('선택한 캐릭터 데이터를 찾을 수 없습니다.');
+      setError('선택한 회원 데이터를 찾을 수 없습니다.');
       return;
     }
 
@@ -174,11 +174,11 @@ function GameStyleRadarChart() {
     // ID 검증
     if (!item || !item.id) {
       console.error('유효하지 않은 항목 데이터:', item);
-      setError('선택한 캐릭터의 데이터가 유효하지 않습니다.');
+      setError('선택한 회원의 데이터가 유효하지 않습니다.');
       return;
     }
     
-    console.log('캐릭터 데이터 업데이트 시작:', { id: item.id, index });
+    console.log('회원 데이터 업데이트 시작:', { id: item.id, index });
     
     try {
       // 차트 데이터 변환
@@ -203,8 +203,8 @@ function GameStyleRadarChart() {
         return;
       }
       
-      // 캐릭터 이름 추출 시도
-      let name = `캐릭터 #${index + 1}`;
+      // 회원 이름 추출 시도
+      let name = `회원 #${index + 1}`;
       const titleProp = Object.values(item.properties).find(prop => prop.type === 'title');
       if (titleProp && titleProp.title && titleProp.title.length > 0) {
         name = titleProp.title.map(t => t.plain_text).join('');
@@ -228,33 +228,33 @@ function GameStyleRadarChart() {
       // 레벨 랜덤 설정
       setLevel(Math.floor(Math.random() * 50) + 1);
       
-      // 클래스 설정
-      const classes = ['전사', '마법사', '궁수', '도적', '성직자', '드루이드', '바드'];
+      // 회원 유형형 설정
+      const classes = ['직장인 과부화형', ' 육아맘 리커버리형', '바디프로젝트 형', '자기계발형', '공감커뮤니티형', '힐링 중심형'];
       setCharacterClass(classes[Math.floor(Math.random() * classes.length)]);
       
-      console.log('캐릭터 데이터 업데이트 완료:', name);
+      console.log('회원 데이터 업데이트 완료:', name);
     } catch (error) {
-      console.error('캐릭터 데이터 업데이트 중 오류 발생:', error);
+      console.error('회원 데이터 업데이트 중 오류 발생:', error);
       setError(`데이터 처리 중 오류가 발생했습니다: ${error.message}`);
     }
   };
 
-  // 캐릭터 목록에서 이름 표시용 함수
+  // 회원 목록에서 이름 표시용 함수
   const getCharacterName = (item, index) => {
     const titleProp = Object.values(item.properties).find(prop => prop.type === 'title');
     if (titleProp && titleProp.title.length > 0) {
       return titleProp.title.map(t => t.plain_text).join('');
     }
-    return index !== undefined ? `캐릭터 #${index + 1}` : '이름 없음';
+    return index !== undefined ? `회원 #${index + 1}` : '이름 없음';
   };
 
-  // 검색어를 기준으로 필터링된 캐릭터 목록
+  // 검색어를 기준으로 필터링된 회원 목록
   const filteredCharacters = notionData.filter(item => {
     const characterName = getCharacterName(item);
     return characterName.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
-  // 캐릭터 선택 핸들러
+  // 회원 선택 핸들러
   const handleCharacterSelect = (index) => {
     // 필터링된 목록에서 실제 원본 데이터의 인덱스를 찾음
     const selectedItem = filteredCharacters[index];
@@ -263,7 +263,7 @@ function GameStyleRadarChart() {
     // 원본 데이터의 인덱스를 저장
     setSelectedIndex(originalIndex);
     
-    // 선택된 캐릭터 데이터 업데이트
+    // 선택된 회원 데이터 업데이트
     updateSelectedCharacter(notionData, originalIndex);
   };
 
@@ -357,7 +357,7 @@ function GameStyleRadarChart() {
         labels,
         datasets: [
           {
-            label: '캐릭터 스탯',
+            label: '회원 스탯',
             data: dataValues,
             backgroundColor: 'rgba(75, 217, 251, 0.5)',
             borderColor: 'rgba(75, 217, 251, 1)',
@@ -432,7 +432,7 @@ function GameStyleRadarChart() {
   // 로딩 및 에러 화면
   if (loading) return <div className="game-loading">데이터 로딩 중...</div>;
   if (error) return <div className="game-error">데이터 불러오기 실패!</div>;
-  if (!chartData) return <div className="game-no-data">캐릭터 정보를 찾을 수 없습니다.</div>;
+  if (!chartData) return <div className="game-no-data">회원 정보를 찾을 수 없습니다.</div>;
 
   return (
     <div className="game-chart-container">
@@ -444,7 +444,7 @@ function GameStyleRadarChart() {
             <h2>{characterName} <span className="character-level">Lv.{level}</span></h2>
             <p className="character-class">{characterClass}</p>
             <button className="sidebar-toggle-button" onClick={toggleSidebar}>
-              {isSidebarOpen ? '캐릭터 목록 닫기' : '캐릭터 목록 보기'}
+              {isSidebarOpen ? '회원 목록 닫기' : '회원 목록 보기'}
             </button>
           </div>
         </div>
@@ -480,10 +480,10 @@ function GameStyleRadarChart() {
           ))}
         </div>
         
-        {/* 캐릭터 설명 섹션 */}
+        {/* 회원 설명 섹션 */}
         <div className="character-description-section">
           <div className="description-header">
-            <h3>캐릭터 설명</h3>
+            <h3>회원 설명</h3>
             {!isEditingDesc ? (
               <button className="edit-button" onClick={() => setIsEditingDesc(true)}>
                 <i className="edit-icon">✎</i>
@@ -502,26 +502,26 @@ function GameStyleRadarChart() {
               className="description-editor"
               value={description}
               onChange={handleDescChange}
-              placeholder="캐릭터 설명을 입력하세요..."
+              placeholder="회원 설명을 입력하세요..."
             />
           ) : (
             <div className="description-content">
-              {description || "캐릭터 설명이 등록되지 않았습니다."}
+              {description || "회원 설명이 등록되지 않았습니다."}
             </div>
           )}
         </div>
       </div>
       
-      {/* 캐릭터 목록 사이드바 (토글 가능한 형식) */}
+      {/* 회원 목록 사이드바 (토글 가능한 형식) */}
       <div className={`character-sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
-        <h3 className="sidebar-title">캐릭터 목록</h3>
+        <h3 className="sidebar-title">회원 목록</h3>
         
         <div className="search-box">
           <input
             type="text"
             value={searchTerm}
             onChange={handleSearchChange}
-            placeholder="캐릭터 검색..."
+            placeholder="회원 검색..."
             className="search-input"
           />
         </div>
@@ -539,7 +539,7 @@ function GameStyleRadarChart() {
         </div>
         
         <div className="sidebar-footer">
-          <p>캐릭터는 메모가 가능하다</p>
+          <p>회원는 메모가 가능하다</p>
         </div>
       </div>
     </div>
