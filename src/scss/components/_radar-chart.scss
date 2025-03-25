@@ -20,6 +20,13 @@
     margin: $spacing-base auto;
     flex-direction: column;
   }
+  
+  @include respond-to(sm) {
+    padding: $spacing-sm;
+    margin: $spacing-sm auto;
+    border-radius: $border-radius-xs;
+    border-width: 1px;
+  }
 }
 
 // 메인 컨텐츠 영역
@@ -35,6 +42,60 @@
   @include respond-to(md) {
     padding-right: 0;
     margin-bottom: 60px;
+  }
+  
+  // 모바일 뷰 최적화
+  &.mobile-view {
+    .radar-chart-wrapper {
+      margin-top: 10px;
+      
+      canvas {
+        max-width: 95%;
+        margin: 0 auto;
+      }
+    }
+    
+    .compare-view {
+      .compare-chart-container {
+        canvas {
+          max-width: 95%;
+        }
+      }
+      
+      .compare-title {
+        font-size: 14px;
+      }
+    }
+    
+    .game-character-info {
+      padding: 10px;
+      
+      h2 {
+        font-size: 16px;
+      }
+      
+      .character-meta {
+        font-size: 12px;
+      }
+    }
+    
+    .stat-info-section {
+      .stat-item {
+        padding: 8px;
+        
+        .stat-name {
+          font-size: 11px;
+        }
+        
+        .stat-value {
+          font-size: 16px;
+        }
+        
+        .stat-ratio {
+          font-size: 10px;
+        }
+      }
+    }
   }
 }
 
@@ -65,6 +126,33 @@
   @include respond-to(sm) {
     flex-direction: column;
     align-items: flex-start;
+    margin-bottom: $spacing-md;
+    padding: $spacing-sm;
+    
+    .character-portrait {
+      width: 60px;
+      height: 60px;
+      margin-bottom: $spacing-sm;
+      
+      i {
+        font-size: 24px;
+      }
+    }
+    
+    .character-details h2 {
+      font-size: $font-size-sm;
+      margin-bottom: 5px;
+    }
+    
+    .character-meta {
+      gap: 5px;
+      margin-bottom: 5px;
+    }
+    
+    .sidebar-toggle-button {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
   }
 }
 
@@ -317,12 +405,23 @@
   padding-top: 134px;
   transition: transform 0.3s ease;
   
+  @include respond-to(md) {
+    width: 260px;
+    padding-top: 80px;
+  }
+  
+  @include respond-to(sm) {
+    width: 240px;
+    padding-top: 60px;
+  }
+  
   &.closed {
     transform: translateX(100%);
   }
   
   &.open {
     transform: translateX(0);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
   }
   
   .sidebar-title {
@@ -474,6 +573,33 @@
     z-index: 10;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
   }
+  
+  // 사이드바 모바일 최적화 추가 스타일
+  @include respond-to(sm) {
+    .sidebar-title {
+      font-size: $font-size-md;
+      padding: 0 $spacing-sm $spacing-sm;
+      margin-bottom: $spacing-sm;
+    }
+    
+    .search-box {
+      padding: 0 $spacing-sm $spacing-sm;
+      
+      .search-input {
+        padding: 6px;
+        font-size: 12px;
+      }
+    }
+    
+    .character-item {
+      padding: $spacing-sm;
+      font-size: 12px;
+    }
+    
+    .sidebar-footer {
+      padding: $spacing-sm;
+    }
+  }
 }
 
 // 회원 설명 섹션
@@ -567,6 +693,36 @@
     min-height: 480px;
     max-height: 550px;
   }
+  
+  // 모바일 대응
+  @include respond-to(md) {
+    min-height: 350px;
+    max-height: 450px;
+    
+    canvas {
+      max-height: 350px;
+    }
+    
+    .compare-view & {
+      min-height: 400px;
+      max-height: 450px;
+    }
+  }
+  
+  @include respond-to(sm) {
+    min-height: 300px;
+    max-height: 400px;
+    margin-bottom: $spacing-md;
+    
+    canvas {
+      max-height: 300px;
+    }
+    
+    .compare-view & {
+      min-height: 350px;
+      max-height: 400px;
+    }
+  }
 }
 
 // 스탯 정보 영역
@@ -578,6 +734,19 @@
   border-radius: $border-radius-md;
   padding: $spacing-lg;
   margin-top: $spacing-lg;
+  
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+    padding: $spacing-md;
+  }
+  
+  @include respond-to(sm) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+    margin-top: $spacing-md;
+    border-radius: $border-radius-sm;
+  }
   
   .stat-item {
     display: flex;
@@ -901,6 +1070,15 @@
   max-height: 550px;
   animation: fadeSlideIn 0.3s ease-in-out;
   
+  // 모바일 최적화
+  @include respond-to(sm) {
+    max-height: 480px;
+    
+    .compare-view-header {
+      margin-bottom: 5px;
+    }
+  }
+  
   .compare-view-header {
     display: flex;
     justify-content: space-between;
@@ -928,6 +1106,11 @@
       height: 2px;
       background-color: rgba($color-accent, 0.5);
     }
+    
+    @include respond-to(sm) {
+      font-size: $font-size-sm;
+      margin-bottom: $spacing-sm;
+    }
   }
   
   .compare-chart-container {
@@ -940,6 +1123,17 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    
+    @include respond-to(md) {
+      height: 400px;
+      max-height: 400px;
+    }
+    
+    @include respond-to(sm) {
+      height: 350px;
+      max-height: 350px;
+      margin-top: 5px;
+    }
     
     canvas {
       max-height: 100% !important;
@@ -964,6 +1158,10 @@
       max-width: 100%;
     }
     
+    @include respond-to(sm) {
+      gap: 5px;
+    }
+    
     .selected-character-badge {
       display: flex;
       align-items: center;
@@ -978,6 +1176,16 @@
       @for $i from 1 through 4 {
         &:nth-child(#{$i}) {
           animation-delay: 0.05s * $i;
+        }
+      }
+      
+      @include respond-to(sm) {
+        font-size: 10px;
+        padding: 3px 6px;
+        
+        .remove-character {
+          font-size: 12px;
+          margin-left: 3px;
         }
       }
       
@@ -1008,6 +1216,11 @@
         margin-right: 1px;
         color: $color-accent;
         font-size: 10px;
+        
+        @include respond-to(sm) {
+          font-size: 8px;
+          margin-left: 3px;
+        }
         
         i {
           filter: drop-shadow(0 0 2px rgba($color-accent, 0.5));
@@ -1076,6 +1289,22 @@
   position: relative;
   z-index: 20;
   overflow: visible;
+  
+  @include respond-to(sm) {
+    padding: 10px 15px;
+    margin: 0 10px 10px;
+    border-radius: 8px;
+    border-width: 1px;
+    
+    .compare-switch-label {
+      font-size: 13px;
+      
+      &::before {
+        font-size: 14px;
+        margin-right: 6px;
+      }
+    }
+  }
   
   &::before {
     content: '';
@@ -1234,5 +1463,13 @@
     opacity: 1;
     transform: translateX(0);
     visibility: visible;
+  }
+}
+
+// Chart.js 라벨 모바일 최적화
+.chartjs-legend li span {
+  @include respond-to(sm) {
+    padding: 2px 5px;
+    margin-right: 5px;
   }
 } 

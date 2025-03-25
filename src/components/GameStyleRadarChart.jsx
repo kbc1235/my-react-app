@@ -574,6 +574,152 @@ function GameStyleRadarChart() {
     }
   };
 
+  // 모바일 환경에서 차트 옵션 조정
+  const isMobile = window.innerWidth <= 768;
+  
+  if (isMobile) {
+    // 모바일 환경에서 차트 옵션 수정
+    chartOptions.scales.r.pointLabels.font.size = 10;
+    chartOptions.scales.r.ticks.display = false;
+    chartOptions.scales.r.ticks.font.size = 8;
+    chartOptions.plugins.legend.labels.font.size = 12;
+    chartOptions.plugins.legend.labels.boxWidth = 10;
+    chartOptions.plugins.legend.labels.padding = 5;
+    chartOptions.elements.point.radius = 3;
+    chartOptions.elements.point.hoverRadius = 5;
+    chartOptions.elements.line.borderWidth = 1.5;
+  }
+
+  // 비교 모드 차트 옵션
+  const compareChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+      padding: {
+        top: 5,
+        bottom: 25,
+        left: 5,
+        right: 5
+      }
+    },
+    scales: {
+      r: {
+        angleLines: {
+          display: true,
+          color: 'rgba(75, 217, 251, 0.1)'
+        },
+        grid: {
+          color: 'rgba(75, 217, 251, 0.1)',
+          circular: true
+        },
+        beginAtZero: true,
+        suggestedMin: 0,
+        suggestedMax: 100,
+        ticks: {
+          backdropColor: 'transparent',
+          display: false,
+          stepSize: 20,
+          z: 1,
+          font: {
+            size: 10
+          }
+        },
+        pointLabels: {
+          color: 'rgba(255, 255, 255, 0.8)',
+          font: {
+            size: 11,
+            family: '"Noto Sans KR", sans-serif',
+          },
+          padding: 5,
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        position: 'bottom',
+        align: 'center',
+        labels: {
+          color: 'rgba(255, 255, 255, 0.8)',
+          boxWidth: 12,
+          padding: 10,
+          font: {
+            size: 11,
+            family: '"Noto Sans KR", sans-serif',
+          },
+          filter: () => {
+            return true;
+          },
+          generateLabels: (chart) => {
+            const defaultLabels = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+            
+            return defaultLabels.map(label => {
+              if (label.text.includes('(현재)')) {
+                return {
+                  ...label,
+                  fontStyle: 'bold',
+                  lineWidth: 3
+                };
+              }
+              return label;
+            });
+          }
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleFont: {
+          family: '"Noto Sans KR", sans-serif',
+          size: 12
+        },
+        bodyFont: {
+          family: '"Noto Sans KR", sans-serif',
+          size: 12
+        },
+        callbacks: {
+          title: (tooltipItems) => {
+            return `${tooltipItems[0].label}`;
+          },
+          label: (context) => {
+            const label = context.dataset.label;
+            const value = context.raw;
+            return `${label}: ${value}`;
+          }
+        }
+      }
+    },
+    elements: {
+      line: {
+        tension: 0.2,
+        borderWidth: 2
+      },
+      point: {
+        hitRadius: 10,
+        hoverRadius: 7
+      }
+    }
+  };
+  
+  // 모바일 환경에서 비교 차트 옵션 조정
+  if (isMobile) {
+    // 모바일 환경에서 비교 차트 옵션 수정
+    compareChartOptions.scales.r.pointLabels.font.size = 9;
+    compareChartOptions.scales.r.pointLabels.padding = 2;
+    compareChartOptions.plugins.legend.labels.boxWidth = 8;
+    compareChartOptions.plugins.legend.labels.padding = 5;
+    compareChartOptions.plugins.legend.labels.font.size = 9;
+    compareChartOptions.plugins.tooltip.titleFont.size = 10;
+    compareChartOptions.plugins.tooltip.bodyFont.size = 10;
+    compareChartOptions.elements.point.radius = 3;
+    compareChartOptions.elements.point.hoverRadius = 5;
+    compareChartOptions.elements.line.borderWidth = 1.5;
+    compareChartOptions.layout.padding = {
+      top: 5,
+      bottom: 15,
+      left: 5,
+      right: 5
+    };
+  }
+
   // 회원 체크박스 토글 처리 함수 수정
   const handleToggleCharacterSelect = (item, index) => {
     const originalIndex = notionData.findIndex(dataItem => dataItem.id === item.id);
@@ -735,115 +881,6 @@ function GameStyleRadarChart() {
     };
   };
 
-  // 비교 모드 차트 옵션
-  const compareChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    layout: {
-      padding: {
-        top: 5,
-        bottom: 25,
-        left: 5,
-        right: 5
-      }
-    },
-    scales: {
-      r: {
-        angleLines: {
-          display: true,
-          color: 'rgba(75, 217, 251, 0.1)'
-        },
-        grid: {
-          color: 'rgba(75, 217, 251, 0.1)',
-          circular: true
-        },
-        beginAtZero: true,
-        suggestedMin: 0,
-        suggestedMax: 100,
-        ticks: {
-          backdropColor: 'transparent',
-          display: false,
-          stepSize: 20,
-          z: 1,
-          font: {
-            size: 10
-          }
-        },
-        pointLabels: {
-          color: 'rgba(255, 255, 255, 0.8)',
-          font: {
-            size: 11,
-            family: '"Noto Sans KR", sans-serif',
-          },
-          padding: 5,
-        }
-      }
-    },
-    plugins: {
-      legend: {
-        position: 'bottom',
-        align: 'center',
-        labels: {
-          color: 'rgba(255, 255, 255, 0.8)',
-          boxWidth: 12,
-          padding: 10,
-          font: {
-            size: 11,
-            family: '"Noto Sans KR", sans-serif',
-          },
-          filter: () => {
-            return true;
-          },
-          generateLabels: (chart) => {
-            const defaultLabels = Chart.defaults.plugins.legend.labels.generateLabels(chart);
-            
-            return defaultLabels.map(label => {
-              if (label.text.includes('(현재)')) {
-                return {
-                  ...label,
-                  fontStyle: 'bold',
-                  lineWidth: 3
-                };
-              }
-              return label;
-            });
-          }
-        }
-      },
-      tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        titleFont: {
-          family: '"Noto Sans KR", sans-serif',
-          size: 12
-        },
-        bodyFont: {
-          family: '"Noto Sans KR", sans-serif',
-          size: 12
-        },
-        callbacks: {
-          title: (tooltipItems) => {
-            return `${tooltipItems[0].label}`;
-          },
-          label: (context) => {
-            const label = context.dataset.label;
-            const value = context.raw;
-            return `${label}: ${value}`;
-          }
-        }
-      }
-    },
-    elements: {
-      line: {
-        tension: 0.2,
-        borderWidth: 2
-      },
-      point: {
-        hitRadius: 10,
-        hoverRadius: 7
-      }
-    }
-  };
-
   // 로딩 및 에러 화면
   if (loading) return (
     <div className="game-chart-container">
@@ -896,7 +933,7 @@ function GameStyleRadarChart() {
   return (
     <div className="game-chart-container">
       {/* 메인 컨텐츠 영역 */}
-      <div className="game-main-content">
+      <div className={`game-main-content ${isMobile ? 'mobile-view' : ''}`}>
         <div className="game-character-info">
           <div className="character-portrait">
             <i className="fa fa-user"></i>
@@ -915,17 +952,16 @@ function GameStyleRadarChart() {
         </div>
         
         {/* 환경 정보 표시 */}
+        {!usingProxy &&
         <div className="game-notice">
-          {usingProxy ? (
-            <span className="env-proxy">프로젝션 환경 (Netlify Functions 사용)</span>
-          ) : (
-            <span className={environment.isProduction ? "env-production" : "env-development"}>
+         <span className={environment.isProduction ? "env-production" : "env-development"}>
               {environment.isProduction 
                 ? '프로덕션 환경 (Netlify Functions 사용)' 
                 : '개발 환경 (로컬 프록시 사용)'}
             </span>
-          )}
         </div>
+        }
+       
         
         {/* 레이더 차트 영역 */}
         <div className="radar-chart-wrapper">
