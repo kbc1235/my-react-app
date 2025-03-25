@@ -439,11 +439,17 @@ function GameStyleRadarChart() {
       {/* 메인 컨텐츠 영역 */}
       <div className="game-main-content">
         <div className="game-character-info">
-          <div className="character-portrait"></div>
+          <div className="character-portrait">
+            <i className="fa fa-user"></i>
+          </div>
           <div className="character-details">
             <h2>{characterName} <span className="character-level">Lv.{level}</span></h2>
-            <p className="character-class">{characterClass}</p>
+            <div className="character-meta">
+              <span className="character-class"><i className="fa fa-star"></i> {characterClass}</span>
+              <span className="character-status">활성</span>
+            </div>
             <button className="sidebar-toggle-button" onClick={toggleSidebar}>
+              <i className="fa fa-users"></i>
               {isSidebarOpen ? '회원 목록 닫기' : '회원 목록 보기'}
             </button>
           </div>
@@ -539,7 +545,7 @@ function GameStyleRadarChart() {
         </div>
         
         <div className="sidebar-footer">
-          <p>회원는 메모가 가능하다</p>
+          <p>여기에는 뭐가 들어가야 하나 고민중</p>
         </div>
       </div>
     </div>

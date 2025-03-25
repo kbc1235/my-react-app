@@ -44,11 +44,23 @@
   align-items: center;
   margin-bottom: $spacing-lg;
   padding: $spacing-base;
-  background-color: $color-card-bg;
-  border: $border-width-thin solid $color-border;
+  background-color: rgba($color-card-bg, 0.8);
+  border: $border-width-thin solid $color-accent;
   border-radius: $border-radius-sm;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 0 15px rgba($color-accent, 0.2);
+  
+  // 배경 장식 효과
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, $color-accent, transparent);
+  }
   
   @include respond-to(sm) {
     flex-direction: column;
@@ -60,7 +72,7 @@
 .character-portrait {
   width: 80px;
   height: 80px;
-  background-color: #222;
+  background-color: rgba($color-dark-bg, 0.7);
   border: $border-width-thin solid $color-accent;
   border-radius: $border-radius-circle;
   margin-right: $spacing-base;
@@ -69,6 +81,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 0 10px rgba($color-accent, 0.3);
+  
+  i {
+    font-size: 32px;
+    color: rgba($color-accent, 0.5);
+  }
   
   @include respond-to(sm) {
     margin-bottom: $spacing-md;
@@ -89,6 +107,8 @@
 .character-details {
   flex: 1;
   position: relative;
+  display: flex;
+  flex-direction: column;
   
   h2 {
     margin: 0 0 $spacing-xs 0;
@@ -100,18 +120,60 @@
   }
 }
 
+// 캐릭터 메타 정보 영역
+.character-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-xs;
+}
+
 .character-level {
   color: $color-accent;
   font-size: $font-size-sm;
   margin-left: $spacing-sm;
   font-weight: $font-weight-bold;
+  background-color: rgba($color-dark-bg, 0.7);
+  padding: 2px 6px;
+  border-radius: $border-radius-sm;
 }
 
 .character-class {
-  display: block;
+  display: inline-flex;
+  align-items: center;
   font-size: $font-size-sm;
   color: $color-text-secondary;
-  margin-bottom: $spacing-xs;
+  padding: 2px 8px;
+  background-color: rgba($color-dark-bg, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba($color-border, 0.3);
+  
+  i {
+    margin-right: 4px;
+    color: #ffcc00;
+  }
+}
+
+.character-status {
+  display: inline-flex;
+  align-items: center;
+  font-size: $font-size-xs;
+  color: #50fa7b;
+  background-color: rgba(80, 250, 123, 0.1);
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(80, 250, 123, 0.3);
+  
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: #50fa7b;
+    border-radius: 50%;
+    margin-right: 4px;
+  }
 }
 
 // 회원 선택 버튼
@@ -449,12 +511,18 @@
   font-size: $font-size-sm;
   padding: $spacing-sm $spacing-base;
   margin-top: $spacing-sm;
-  background-color: $color-dark-bg;
+  background-color: rgba($color-dark-bg, 0.7);
   border: $border-width-thin solid $color-accent;
   color: $color-text-primary;
   transition: all $transition-base;
+  align-self: flex-start;
+  
+  i {
+    font-size: 14px;
+  }
   
   &:hover {
     background-color: rgba($color-accent, 0.2);
+    transform: translateY(-1px);
   }
 } 
