@@ -525,4 +525,196 @@
     background-color: rgba($color-accent, 0.2);
     transform: translateY(-1px);
   }
+}
+
+// 스켈레톤 UI 스타일
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba($color-card-bg, 0.5);
+  border-color: rgba($color-border, 0.2);
+}
+
+// 스켈레톤 펄스 애니메이션
+@keyframes skeleton-pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.skeleton-pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba($color-dark-bg, 0.2);
+  animation: skeleton-pulse 1.8s ease-in-out infinite;
+}
+
+// 스켈레톤 아바타
+.skeleton-avatar {
+  position: relative;
+  background-color: rgba($color-dark-bg, 0.3);
+}
+
+// 스켈레톤 타이틀
+.skeleton-title {
+  width: 200px;
+  height: 24px;
+  margin-bottom: $spacing-xs;
+  border-radius: $border-radius-sm;
+  position: relative;
+}
+
+// 스켈레톤 메타 정보
+.skeleton-meta {
+  width: 150px;
+  height: 18px;
+  margin-bottom: $spacing-xs;
+  border-radius: $border-radius-sm;
+  position: relative;
+}
+
+// 스켈레톤 버튼
+.skeleton-button {
+  width: 120px;
+  height: 32px;
+  margin-top: $spacing-sm;
+  border-radius: $border-radius-sm;
+  position: relative;
+}
+
+// 스켈레톤 차트
+.skeleton-chart {
+  width: 100%;
+  height: 400px;
+  position: relative;
+  border-radius: $border-radius-sm;
+}
+
+// 스켈레톤 스탯
+.skeleton-stat-name {
+  width: 80%;
+  height: 16px;
+  margin-bottom: $spacing-xs;
+  border-radius: $border-radius-sm;
+  position: relative;
+}
+
+.skeleton-stat-value {
+  width: 60%;
+  height: 24px;
+  margin-bottom: $spacing-xs;
+  border-radius: $border-radius-sm;
+  position: relative;
+}
+
+.skeleton-stat-ratio {
+  width: 40%;
+  height: 14px;
+  border-radius: $border-radius-sm;
+  position: relative;
+}
+
+// 스켈레톤 설명
+.skeleton-desc-title {
+  width: 120px;
+  height: 20px;
+  border-radius: $border-radius-sm;
+  position: relative;
+}
+
+.skeleton-desc-button {
+  width: 80px;
+  height: 24px;
+  border-radius: $border-radius-sm;
+  position: relative;
+}
+
+.skeleton-desc-content {
+  width: 100%;
+  height: 120px;
+  margin-top: $spacing-md;
+  border-radius: $border-radius-sm;
+  position: relative;
+}
+
+// 에러 메시지
+.error-message {
+  color: #ff6b6b;
+  font-size: $font-size-sm;
+  margin-bottom: $spacing-base;
+}
+
+// 로딩 및 에러 상태 컨테이너
+.game-loading, .game-error, .game-no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-lg;
+  text-align: center;
+  width: 100%;
+  
+  p {
+    margin-bottom: $spacing-lg;
+    font-size: $font-size-lg;
+    color: $color-text-secondary;
+  }
+  
+  .loading-subtext, .no-data-subtext {
+    font-size: $font-size-sm;
+    margin-top: -$spacing-md;
+    color: $color-text-muted;
+  }
+  
+  .loading-icon, .error-icon, .no-data-icon {
+    margin-bottom: $spacing-lg;
+    
+    i {
+      color: $color-accent;
+    }
+  }
+  
+  .error-icon i {
+    color: #ff6b6b;
+  }
+  
+  .no-data-icon i {
+    color: #aaa;
+  }
+  
+  .retry-button {
+    @include button-default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-sm;
+    font-size: $font-size-sm;
+    padding: $spacing-sm $spacing-base;
+    margin: 0 0 $spacing-lg;
+    background-color: rgba($color-dark-bg, 0.7);
+    border: $border-width-thin solid #ff6b6b;
+    color: #ff6b6b;
+    transition: all $transition-base;
+    
+    &:hover {
+      background-color: rgba(#ff6b6b, 0.2);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// 스켈레톤 컨테이너
+.skeleton-container {
+  width: 100%;
+  max-width: 800px;
+  opacity: 0.7;
 } 

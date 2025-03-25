@@ -42,6 +42,46 @@ const STAT_NAMES = {
   'Luck': '행운',
 };
 
+// 스켈레톤 UI 컴포넌트
+const SkeletonUI = () => {
+  return (
+    <div className="skeleton-container">
+      <div className="game-character-info skeleton">
+        <div className="character-portrait skeleton-avatar">
+          <div className="skeleton-pulse"></div>
+        </div>
+        <div className="character-details">
+          <div className="skeleton-title"><div className="skeleton-pulse"></div></div>
+          <div className="skeleton-meta"><div className="skeleton-pulse"></div></div>
+          <div className="skeleton-button"><div className="skeleton-pulse"></div></div>
+        </div>
+      </div>
+      
+      <div className="radar-chart-wrapper skeleton">
+        <div className="skeleton-chart"><div className="skeleton-pulse"></div></div>
+      </div>
+      
+      <div className="stat-info-section skeleton">
+        {[...Array(6)].map((_, index) => (
+          <div key={index} className="stat-item skeleton">
+            <div className="skeleton-stat-name"><div className="skeleton-pulse"></div></div>
+            <div className="skeleton-stat-value"><div className="skeleton-pulse"></div></div>
+            <div className="skeleton-stat-ratio"><div className="skeleton-pulse"></div></div>
+          </div>
+        ))}
+      </div>
+      
+      <div className="character-description-section skeleton">
+        <div className="description-header">
+          <div className="skeleton-desc-title"><div className="skeleton-pulse"></div></div>
+          <div className="skeleton-desc-button"><div className="skeleton-pulse"></div></div>
+        </div>
+        <div className="skeleton-desc-content"><div className="skeleton-pulse"></div></div>
+      </div>
+    </div>
+  );
+};
+
 // 스탯 이름 변환 함수
 const translateStatName = (name) => {
   return STAT_NAMES[name] || name;
@@ -430,9 +470,53 @@ function GameStyleRadarChart() {
   };
 
   // 로딩 및 에러 화면
-  if (loading) return <div className="game-loading">데이터 로딩 중...</div>;
-  if (error) return <div className="game-error">데이터 불러오기 실패!</div>;
-  if (!chartData) return <div className="game-no-data">회원 정보를 찾을 수 없습니다.</div>;
+  if (loading) return (
+    <div className="game-chart-container">
+      <div className="game-main-content">
+        <div className="game-loading">
+          <div className="loading-icon">
+            <i className="fa fa-spinner fa-pulse fa-3x"></i>
+          </div>
+          <p>데이터를 불러오는 중입니다...</p>
+          <p className="loading-subtext">잠시만 기다려주세요.</p>
+          <SkeletonUI />
+        </div>
+      </div>
+    </div>
+  );
+  
+  if (error) return (
+    <div className="game-chart-container">
+      <div className="game-main-content">
+        <div className="game-error">
+          <div className="error-icon">
+            <i className="fa fa-exclamation-triangle fa-3x"></i>
+          </div>
+          <p>데이터를 불러오는데 실패했습니다</p>
+          <p className="error-message">{error}</p>
+          <button className="retry-button" onClick={() => window.location.reload()}>
+            <i className="fa fa-refresh"></i> 다시 시도
+          </button>
+          <SkeletonUI />
+        </div>
+      </div>
+    </div>
+  );
+  
+  if (!chartData) return (
+    <div className="game-chart-container">
+      <div className="game-main-content">
+        <div className="game-no-data">
+          <div className="no-data-icon">
+            <i className="fa fa-search fa-3x"></i>
+          </div>
+          <p>회원 정보를 찾을 수 없습니다</p>
+          <p className="no-data-subtext">다른 회원을 선택하거나 검색해보세요.</p>
+          <SkeletonUI />
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="game-chart-container">
