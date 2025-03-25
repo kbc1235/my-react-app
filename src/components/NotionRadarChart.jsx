@@ -11,7 +11,6 @@ import {
 } from 'chart.js';
 import { fetchNotionDatabase } from '../services/notionService';
 import { fetchNotionDatabaseWithProxy } from '../services/notionCorsProxyService';
-import '../styles/NotionRadarChart.css';
 
 // Chart.js 컴포넌트 등록
 ChartJS.register(

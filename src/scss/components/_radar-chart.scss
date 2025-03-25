@@ -1,0 +1,232 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.game-chart-container {
+  background-color: $color-black;
+  color: $color-text-primary;
+  padding: $spacing-lg;
+  border-radius: $border-radius-sm;
+  box-shadow: $shadow-md;
+  font-family: $font-primary;
+  max-width: $breakpoint-xl;
+  margin: $spacing-lg auto;
+  border: $border-width-thin solid $color-border;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  
+  @include respond-to(md) {
+    padding: $spacing-base;
+    margin: $spacing-base auto;
+  }
+}
+
+// 메인 컨텐츠 영역
+.game-main-content {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+}
+
+// 캐릭터 정보 영역
+.game-character-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+  padding: $spacing-base;
+  background-color: $color-card-bg;
+  border: $border-width-thin solid $color-border;
+  border-radius: $border-radius-sm;
+  position: relative;
+  overflow: hidden;
+  
+  @include respond-to(sm) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+// 캐릭터 초상화
+.character-portrait {
+  width: 60px;
+  height: 60px;
+  background-color: #222;
+  border: $border-width-thin solid $color-accent;
+  border-radius: $border-radius-circle;
+  margin-right: $spacing-base;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  @include respond-to(sm) {
+    margin-bottom: $spacing-md;
+  }
+}
+
+// 국가 플래그 스타일
+.country-flag {
+  width: 1.5rem;
+  height: 1rem;
+  margin-right: $spacing-sm;
+  vertical-align: middle;
+  border-radius: 2px;
+  border: $border-width-thin solid rgba(255, 255, 255, 0.2);
+}
+
+// 캐릭터 세부 정보
+.character-details {
+  flex: 1;
+  position: relative;
+  
+  h2 {
+    margin: 0 0 $spacing-xs 0;
+    font-size: $font-size-md;
+    color: $color-text-primary;
+    font-weight: $font-weight-bold;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.character-level {
+  color: $color-accent;
+  font-size: $font-size-sm;
+  margin-left: $spacing-sm;
+  font-weight: $font-weight-bold;
+}
+
+.character-class {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-xs;
+}
+
+// 캐릭터 선택 버튼
+.character-select-button {
+  @include button-default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  font-size: $font-size-sm;
+  padding: $spacing-sm $spacing-base;
+}
+
+// 리더보드 스타일
+.leaderboard {
+  margin-top: $spacing-xl;
+  width: 100%;
+  border-radius: $border-radius-sm;
+  overflow: hidden;
+  border: $border-width-thin solid $color-border;
+}
+
+.leaderboard-header {
+  display: flex;
+  padding: $spacing-md $spacing-base;
+  background-color: $color-dark-bg;
+  border-bottom: $border-width-thin solid $color-border;
+  
+  @include respond-to(sm) {
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+}
+
+.leaderboard-title {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.leaderboard-filters {
+  display: flex;
+  margin-left: auto;
+  gap: $spacing-sm;
+  
+  @include respond-to(sm) {
+    margin-left: 0;
+  }
+}
+
+.filter-button {
+  background-color: $color-card-bg;
+  color: $color-text-secondary;
+  border: $border-width-thin solid $color-border;
+  padding: $spacing-xs $spacing-md;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-xs;
+  cursor: pointer;
+  transition: all $transition-base;
+  
+  &.active {
+    background-color: $color-accent;
+    color: $color-black;
+    border-color: $color-accent;
+  }
+}
+
+// 플레이어 리스트
+.player-list {
+  background-color: $color-black;
+}
+
+.player-item {
+  display: flex;
+  align-items: center;
+  padding: $spacing-md $spacing-base;
+  border-bottom: $border-width-thin solid $color-border;
+  transition: all $transition-base;
+  
+  &:hover {
+    background-color: $color-card-bg;
+  }
+}
+
+.player-rank {
+  width: 2.5rem;
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.player-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: $border-radius-circle;
+  margin-right: $spacing-base;
+  background-color: #222;
+  border: $border-width-thin solid $color-border;
+  overflow: hidden;
+}
+
+.player-name-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.player-name {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  display: flex;
+  align-items: center;
+}
+
+.player-points {
+  margin-left: auto;
+  font-size: $font-size-base;
+  font-weight: $font-weight-heavy;
+  color: $color-accent;
+} 

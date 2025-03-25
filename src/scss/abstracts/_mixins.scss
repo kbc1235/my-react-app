@@ -1,0 +1,129 @@
+@use '../abstracts/variables' as *;
+// 플렉스박스 중앙 정렬
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// 수평 중앙 정렬
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// 글자 자르기 (말줄임표)
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 반응형 미디어 쿼리
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == xs {
+    @media (max-width: $breakpoint-xs) { @content; }
+  } @else if $breakpoint == sm {
+    @media (max-width: $breakpoint-sm) { @content; }
+  } @else if $breakpoint == md {
+    @media (max-width: $breakpoint-md) { @content; }
+  } @else if $breakpoint == lg {
+    @media (max-width: $breakpoint-lg) { @content; }
+  } @else if $breakpoint == xl {
+    @media (max-width: $breakpoint-xl) { @content; }
+  }
+}
+
+// 버튼 기본 스타일
+@mixin button-base {
+  padding: $spacing-md $spacing-base;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all $transition-base;
+  text-align: center;
+}
+
+// 기본 버튼
+@mixin button-default {
+  @include button-base;
+  background-color: $color-dark-bg;
+  color: $color-text-primary;
+  border: $border-width-thin solid $color-border;
+  
+  &:hover {
+    background-color: $color-card-bg;
+    border-color: $color-accent;
+  }
+}
+
+// 액센트 버튼
+@mixin button-accent {
+  @include button-base;
+  background-color: $color-accent;
+  color: $color-black;
+  border: none;
+  font-weight: $font-weight-bold;
+  
+  &:hover {
+    background-color: $color-accent-light;
+  }
+}
+
+// 카드 스타일
+@mixin card {
+  background-color: $color-card-bg;
+  border-radius: $border-radius-lg;
+  border: $border-width-thin solid $color-card-border;
+  padding: $spacing-lg;
+  transition: all $transition-base;
+  
+  &:hover {
+    box-shadow: $shadow-md;
+    border-color: $color-accent-dark;
+  }
+}
+
+// 입력 필드 스타일
+@mixin input-style {
+  width: 100%;
+  padding: $spacing-md;
+  background-color: $color-dark-bg;
+  border: $border-width-thin solid $color-border;
+  border-radius: $border-radius-sm;
+  color: $color-text-primary;
+  transition: border-color $transition-base;
+  
+  &:focus {
+    border-color: $color-accent;
+    outline: none;
+  }
+}
+
+// 커스텀 스크롤바
+@mixin custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: $color-dark-bg;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: $border-radius-sm;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: $color-accent-dark;
+  }
+}
+
+// 디버그 아웃라인 (개발 시 레이아웃 확인용)
+@mixin debug-outline($color: red) {
+  outline: 1px solid $color;
+} 

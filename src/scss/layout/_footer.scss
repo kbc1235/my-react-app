@@ -1,0 +1,15 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.app-footer {
+  background-color: $color-black;
+  color: $color-text-secondary;
+  text-align: center;
+  padding: $spacing-lg;
+  font-size: $font-size-xs;
+  border-top: $border-width-thin solid $color-border-light;
+  
+  a {
+    color: $color-accent;
+  }
+} 

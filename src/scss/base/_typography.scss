@@ -1,0 +1,114 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+// 기본 글꼴 및 텍스트 스타일
+body {
+  font-family: $font-primary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-base;
+  color: $color-text-primary;
+  background-color: $color-black;
+}
+
+// 제목 스타일
+h1, h2, h3, h4, h5, h6 {
+  font-weight: $font-weight-bold;
+  line-height: 1.2;
+  margin-bottom: $spacing-sm;
+}
+
+h1 {
+  font-size: $font-size-xxl;
+  
+  @include respond-to(md) {
+    font-size: $font-size-xl;
+  }
+}
+
+h2 {
+  font-size: $font-size-xl;
+  
+  @include respond-to(md) {
+    font-size: $font-size-lg;
+  }
+}
+
+h3 {
+  font-size: $font-size-lg;
+  
+  @include respond-to(md) {
+    font-size: $font-size-md;
+  }
+}
+
+h4 {
+  font-size: $font-size-md;
+}
+
+h5 {
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+}
+
+h6 {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// 단락 스타일
+p {
+  margin-bottom: $spacing-base;
+  line-height: 1.6;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// 링크 스타일
+a {
+  color: $color-accent;
+  text-decoration: none;
+  transition: color $transition-fast;
+  
+  &:hover {
+    color: $color-accent-light;
+  }
+}
+
+// 강조 및 기타 인라인 요소
+strong, b {
+  font-weight: $font-weight-bold;
+}
+
+em, i {
+  font-style: italic;
+}
+
+small {
+  font-size: $font-size-sm;
+}
+
+// 코드 블록
+code, pre {
+  font-family: $font-mono;
+  background-color: rgba($color-card-bg, 0.5);
+  border-radius: $border-radius-sm;
+}
+
+code {
+  padding: 0.2em 0.4em;
+  font-size: 0.9em;
+}
+
+pre {
+  padding: $spacing-base;
+  margin-bottom: $spacing-base;
+  overflow-x: auto;
+  
+  code {
+    padding: 0;
+    background-color: transparent;
+  }
+} 

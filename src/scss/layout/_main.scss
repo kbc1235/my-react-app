@@ -1,0 +1,28 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.app-main {
+  flex: 1;
+  padding: $spacing-base;
+  position: relative;
+  z-index: 1;
+  max-width: $breakpoint-xl;
+  margin: 0 auto;
+  width: 100%;
+  
+  @include respond-to(md) {
+    padding: $spacing-base;
+  }
+}
+
+.app-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: $font-primary;
+  background-color: $color-black;
+  color: $color-text-primary;
+  position: relative;
+  overflow-x: hidden;
+} 

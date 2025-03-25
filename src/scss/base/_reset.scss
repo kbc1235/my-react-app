@@ -1,5 +1,5 @@
-/* reset.css - 모든 브라우저 스타일 일관성을 위한 CSS 초기화 */
-
+/* reset.scss - 모든 브라우저 스타일 일관성을 위한 CSS 초기화 */
+@use '../abstracts/variables' as *;
 /* 기본 박스 사이징 설정 */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -35,7 +35,7 @@ footer, header, hgroup, menu, nav, section {
 
 /* 기본 line-height 설정 */
 body {
-  line-height: 1;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -91,6 +91,6 @@ img {
 
 /* 텍스트 선택 스타일 */
 ::selection {
-  background-color: rgba(75, 217, 251, 0.3);
+  background-color: rgba($color-accent, 0.3);
   color: #fff;
 } 

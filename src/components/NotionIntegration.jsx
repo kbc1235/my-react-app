@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { addContentToPage, addItemToDatabase, fetchNotionDatabase } from '../services/notionService';
-import './NotionIntegration.css';
 
 function NotionIntegration() {
   const [input, setInput] = useState('');

@@ -1,0 +1,257 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.leaderboard-container {
+  background-color: $color-black;
+  color: $color-text-primary;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: $font-primary;
+}
+
+// 메인 헤더 부분
+.main-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md;
+  background-color: $color-black;
+  border-bottom: 1px solid $color-border-light;
+  
+  .back-button, .search-button {
+    color: $color-text-primary;
+    background: none;
+    border: none;
+    font-size: $font-size-xl;
+    cursor: pointer;
+    padding: $spacing-xs;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    
+    .dropdown-arrow {
+      margin-left: $spacing-xs;
+      font-size: $font-size-sm;
+    }
+  }
+  
+  .logo {
+    width: 40px;
+    height: 40px;
+    border-radius: $border-radius-circle;
+    overflow: hidden;
+  }
+}
+
+// 탭 네비게이션
+.tabs-navigation {
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid $color-border-light;
+  background-color: $color-black;
+  
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: $spacing-md $spacing-sm;
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+    color: $color-text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    position: relative;
+    
+    &.active {
+      color: $color-text-primary;
+      
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background-color: $color-accent;
+      }
+    }
+  }
+}
+
+// 필터 옵션들
+.filter-options {
+  display: flex;
+  padding: $spacing-md;
+  gap: $spacing-sm;
+  background-color: $color-black;
+  border-bottom: 1px solid $color-border-light;
+  
+  .filter-button {
+    padding: $spacing-xs $spacing-md;
+    border: 1px solid $color-border;
+    border-radius: $border-radius-pill;
+    background-color: transparent;
+    color: $color-text-primary;
+    font-size: $font-size-sm;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all $transition-fast;
+    
+    &.active {
+      border-color: $color-accent;
+      background-color: rgba($color-accent, 0.1);
+    }
+    
+    &:hover {
+      border-color: $color-accent;
+    }
+  }
+  
+  .filter-menu {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: $color-text-primary;
+    font-size: $font-size-lg;
+  }
+}
+
+// 리더보드 헤더
+.leaderboard-header {
+  display: flex;
+  padding: $spacing-md;
+  background-color: $color-leaderboard-header;
+  border-bottom: 1px solid $color-border;
+  
+  .athlete-column {
+    flex: 3;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    font-size: $font-size-sm;
+  }
+  
+  .points-column {
+    flex: 1;
+    text-align: right;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    font-size: $font-size-sm;
+  }
+}
+
+// 리더보드 아이템 (선수 행)
+.athlete-row {
+  display: flex;
+  align-items: center;
+  padding: $spacing-md;
+  border-bottom: 1px solid $color-row-border;
+  background-color: $color-leaderboard-row;
+  position: relative;
+  
+  &:nth-child(odd) {
+    background-color: $color-leaderboard-row-alt;
+  }
+  
+  .rank {
+    width: 50px;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-md;
+  }
+  
+  .athlete-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    
+    .athlete-image {
+      width: $avatar-size-sm;
+      height: $avatar-size-sm;
+      border-radius: $border-radius-circle;
+      margin-right: $spacing-sm;
+      overflow: hidden;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+    
+    .athlete-details {
+      .athlete-name {
+        font-weight: $font-weight-bold;
+        font-size: $font-size-md;
+        margin-bottom: 2px;
+      }
+      
+      .flag {
+        display: inline-block;
+        width: $flag-size;
+        height: calc($flag-size * 0.75);
+        margin-right: $spacing-xs;
+      }
+    }
+  }
+  
+  .points {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    text-align: right;
+    min-width: 120px;
+  }
+  
+  .expand-button {
+    position: absolute;
+    right: $spacing-sm;
+    bottom: $spacing-xs;
+    background: none;
+    border: none;
+    color: $color-text-secondary;
+    cursor: pointer;
+    font-size: $font-size-lg;
+  }
+}
+
+// 하단 탭 네비게이션
+.bottom-navigation {
+  display: flex;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: $color-black;
+  border-top: 1px solid $color-border-light;
+  
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-sm 0;
+    color: $color-text-secondary;
+    
+    &.active {
+      color: $color-text-primary;
+    }
+    
+    .nav-icon {
+      font-size: $font-size-xl;
+      margin-bottom: 4px;
+    }
+    
+    .nav-label {
+      font-size: $font-size-xs;
+    }
+  }
+} 

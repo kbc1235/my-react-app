@@ -11,7 +11,6 @@ import {
 } from 'chart.js';
 import { fetchNotionDatabase } from '../services/notionService';
 import { fetchNotionDatabaseWithProxy } from '../services/notionCorsProxyService';
-import '../styles/NotionRadarChart.css';
 
 // Chart.js 컴포넌트 등록
 ChartJS.register(
@@ -36,18 +35,15 @@ function NotionMultiRadarChart() {
         let result;
         
         try {
-          // 먼저 Vite 프록시 방식 시도
           result = await fetchNotionDatabase();
           setUsingProxy(false);
         } catch (proxyError) {
           console.error('Vite 프록시 방식 실패, CORS 프록시로 시도합니다:', proxyError);
           
-          // Vite 프록시 실패 시 CORS 프록시 방식 시도
           result = await fetchNotionDatabaseWithProxy();
           setUsingProxy(true);
         }
         
-        // 데이터 변환하여 차트 데이터 생성 (다중 데이터셋)
         const transformedData = transformDataForMultiRadarChart(result);
         setChartData(transformedData);
         console.log('Notion 다중 차트 데이터:', transformedData);
@@ -62,40 +58,33 @@ function NotionMultiRadarChart() {
     fetchData();
   }, []);
 
-  // 동일한 속성 이름을 가진 여러 항목을 비교하는 차트 데이터 생성
   const transformDataForMultiRadarChart = (notionData) => {
     if (!notionData || notionData.length === 0) {
       return null;
     }
 
-    // 최대 5개 항목만 사용 (너무 많으면 차트가 복잡해짐)
     const dataItemsLimit = Math.min(5, notionData.length);
     const selectedItems = notionData.slice(0, dataItemsLimit);
     
-    // 공통 속성 이름 찾기
     const commonPropertyNames = new Set();
     
-    // 첫 번째 항목의 속성 추가
     if (selectedItems[0] && selectedItems[0].properties) {
       Object.keys(selectedItems[0].properties).forEach(key => {
         commonPropertyNames.add(key);
       });
     }
-    
-    // 숫자 속성만 필터링
     const labels = Array.from(commonPropertyNames).filter(propName => {
       const property = selectedItems[0].properties[propName];
       return property && (property.type === 'number' || property.number !== undefined);
     });
     
-    // 숫자 속성이 부족하면 예시 라벨 생성
     if (labels.length < 3) {
-      // 최소 3개 이상의 속성이 필요하므로 임의 속성 추가
+
       const dummyLabels = ['속성1', '속성2', '속성3', '속성4', '속성5', '속성6'];
       return {
         labels: dummyLabels,
         datasets: selectedItems.map((item, index) => {
-          // 각 항목의 제목 가져오기 (없으면 항목 번호 사용)
+        
           const titleProperty = Object.values(item.properties).find(prop => prop.type === 'title');
           const itemTitle = titleProperty ? 
             titleProperty.title.map(t => t.plain_text).join('') : 

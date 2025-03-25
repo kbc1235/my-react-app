@@ -12,7 +12,6 @@ import {
 import { fetchNotionDatabase, updatePageProperty } from '../services/notionService';
 import { fetchNotionDatabaseWithProxy } from '../services/notionCorsProxyService';
 import { getEnvironment } from '../utils/apiUtils';
-import '../styles/GameStyleRadarChart.css';
 
 // Chart.js 컴포넌트 등록은 useEffect 내부로 이동
 

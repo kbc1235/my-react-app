@@ -1,0 +1,264 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.notion-integration {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+  background-color: $color-black;
+  border-radius: $border-radius-lg;
+  border: $border-width-thin solid $color-border;
+  color: $color-text-primary;
+  
+  @include respond-to(md) {
+    padding: $spacing-base;
+  }
+  
+  h2 {
+    color: $color-text-primary;
+    margin-bottom: $spacing-lg;
+    text-align: center;
+    font-weight: $font-weight-bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  
+  h3 {
+    color: $color-text-primary;
+    margin: $spacing-lg 0 $spacing-md;
+    font-weight: $font-weight-bold;
+  }
+  
+  .input-container {
+    margin-bottom: $spacing-lg;
+    
+    label {
+      display: block;
+      margin-bottom: $spacing-sm;
+      font-weight: $font-weight-medium;
+      color: $color-text-secondary;
+    }
+    
+    textarea {
+      @include input-style;
+      min-height: 100px;
+      resize: vertical;
+    }
+  }
+  
+  .input-row {
+    margin-bottom: $spacing-base;
+    
+    label {
+      display: block;
+      margin-bottom: $spacing-sm;
+      font-weight: $font-weight-medium;
+      color: $color-text-secondary;
+    }
+    
+    input, select {
+      @include input-style;
+    }
+  }
+  
+  .page-section, 
+  .database-section {
+    border: $border-width-thin solid $color-border;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    background-color: $color-card-bg;
+  }
+  
+  button {
+    display: block;
+    width: 100%;
+    padding: $spacing-md;
+    background-color: $color-dark-bg;
+    color: $color-text-primary;
+    border: $border-width-thin solid $color-border;
+    border-radius: $border-radius-sm;
+    cursor: pointer;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    margin-top: $spacing-base;
+    transition: all $transition-base;
+    
+    &:hover {
+      background-color: $color-card-bg;
+      border-color: $color-accent;
+    }
+    
+    &:disabled {
+      background-color: $color-dark-bg;
+      color: $color-text-muted;
+      cursor: not-allowed;
+      border-color: $color-border;
+    }
+    
+    &.primary {
+      background-color: $color-accent;
+      color: $color-black;
+      border: none;
+      font-weight: $font-weight-bold;
+      
+      &:hover {
+        background-color: $color-accent-light;
+      }
+      
+      &:disabled {
+        background-color: rgba($color-accent, 0.4);
+        color: rgba($color-black, 0.6);
+      }
+    }
+  }
+  
+  .error-message {
+    background-color: rgba($color-error, 0.1);
+    border-left: 4px solid $color-error;
+    padding: $spacing-base;
+    margin-top: $spacing-lg;
+    color: $color-error;
+    border-radius: 0 $border-radius-sm $border-radius-sm 0;
+  }
+  
+  .success-message {
+    background-color: rgba($color-success, 0.1);
+    border-left: 4px solid $color-success;
+    padding: $spacing-base;
+    margin-top: $spacing-lg;
+    color: $color-success;
+    border-radius: 0 $border-radius-sm $border-radius-sm 0;
+  }
+  
+  .template-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    margin-bottom: $spacing-lg;
+    
+    .template-button, 
+    .table-mode-button {
+      flex: 1;
+      min-width: 120px;
+      padding: $spacing-md;
+      background-color: $color-dark-bg;
+      color: $color-text-primary;
+      border: $border-width-thin solid $color-border;
+      border-radius: $border-radius-sm;
+      cursor: pointer;
+      font-size: $font-size-sm;
+      transition: all $transition-base;
+      text-align: center;
+      
+      &:hover {
+        background-color: $color-card-bg;
+        border-color: $color-accent;
+      }
+      
+      &.active {
+        background-color: $color-accent;
+        color: $color-black;
+        border-color: $color-accent;
+        font-weight: $font-weight-bold;
+      }
+    }
+  }
+  
+  .table-input-container {
+    background-color: $color-card-bg;
+    border: $border-width-thin solid $color-border;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    
+    h3 {
+      color: $color-text-primary;
+      margin-top: 0;
+      margin-bottom: $spacing-base;
+      font-weight: $font-weight-bold;
+    }
+    
+    input, textarea, select {
+      background-color: $color-dark-bg;
+      color: $color-text-primary;
+      border: $border-width-thin solid $color-border;
+    }
+  }
+  
+  .exercise-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: $spacing-base;
+    margin-bottom: $spacing-lg;
+    
+    @include respond-to(sm) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .exercise-input {
+    margin-bottom: $spacing-md;
+    
+    label {
+      display: block;
+      margin-bottom: $spacing-sm;
+      font-weight: $font-weight-medium;
+      color: $color-text-secondary;
+    }
+    
+    input {
+      @include input-style;
+    }
+  }
+  
+  .memo-container {
+    margin-top: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    
+    label {
+      display: block;
+      margin-bottom: $spacing-sm;
+      font-weight: $font-weight-medium;
+      color: $color-text-secondary;
+    }
+    
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: $spacing-md;
+      background-color: $color-dark-bg;
+      border: $border-width-thin solid $color-border;
+      border-radius: $border-radius-sm;
+      color: $color-text-primary;
+      font-family: inherit;
+      resize: vertical;
+      transition: border-color $transition-base;
+      
+      &:focus {
+        border-color: $color-accent;
+        outline: none;
+      }
+    }
+  }
+  
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: $spacing-base;
+    
+    label {
+      margin-bottom: 0;
+      margin-left: $spacing-sm;
+      cursor: pointer;
+      color: $color-text-secondary;
+      font-weight: normal;
+    }
+    
+    input[type="checkbox"] {
+      width: auto;
+      cursor: pointer;
+      accent-color: $color-accent;
+    }
+  }
+} 

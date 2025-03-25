@@ -1,0 +1,149 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+// 전체 페이지 설정
+html, body {
+  min-height: 100vh;
+  width: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  
+  @include custom-scrollbar;
+}
+
+// 루트 컨테이너
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+  background-color: $color-black;
+}
+
+// 버튼 기본 스타일
+button {
+  @include button-default;
+  
+  &.primary {
+    @include button-accent;
+  }
+  
+  &:focus, &:focus-visible {
+    outline: $border-width-thin solid $color-accent;
+    outline-offset: 2px;
+  }
+}
+
+// 테이블 기본 스타일
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: $spacing-lg 0;
+}
+
+th, td {
+  padding: $spacing-md;
+  text-align: left;
+}
+
+th {
+  background-color: $color-dark-bg;
+  color: $color-text-primary;
+  font-weight: $font-weight-bold;
+  text-transform: uppercase;
+  font-size: $font-size-xs;
+  letter-spacing: 0.05em;
+}
+
+tr {
+  transition: background-color $transition-fast;
+  
+  &:not(:last-child) {
+    border-bottom: $border-width-thin solid $color-border;
+  }
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+// 카드 컴포넌트
+.card {
+  @include card;
+  margin-bottom: $spacing-base;
+}
+
+// 유틸리티 클래스
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mt-1 { margin-top: $spacing-xs; }
+.mt-2 { margin-top: $spacing-sm; }
+.mt-3 { margin-top: $spacing-base; }
+.mt-4 { margin-top: $spacing-lg; }
+.mt-5 { margin-top: $spacing-xl; }
+
+.mb-1 { margin-bottom: $spacing-xs; }
+.mb-2 { margin-bottom: $spacing-sm; }
+.mb-3 { margin-bottom: $spacing-base; }
+.mb-4 { margin-bottom: $spacing-lg; }
+.mb-5 { margin-bottom: $spacing-xl; }
+
+.ml-1 { margin-left: $spacing-xs; }
+.ml-2 { margin-left: $spacing-sm; }
+.ml-3 { margin-left: $spacing-base; }
+.ml-4 { margin-left: $spacing-lg; }
+.ml-5 { margin-left: $spacing-xl; }
+
+.mr-1 { margin-right: $spacing-xs; }
+.mr-2 { margin-right: $spacing-sm; }
+.mr-3 { margin-right: $spacing-base; }
+.mr-4 { margin-right: $spacing-lg; }
+.mr-5 { margin-right: $spacing-xl; }
+
+.py-1 { padding-top: $spacing-xs; padding-bottom: $spacing-xs; }
+.py-2 { padding-top: $spacing-sm; padding-bottom: $spacing-sm; }
+.py-3 { padding-top: $spacing-base; padding-bottom: $spacing-base; }
+.py-4 { padding-top: $spacing-lg; padding-bottom: $spacing-lg; }
+.py-5 { padding-top: $spacing-xl; padding-bottom: $spacing-xl; }
+
+.px-1 { padding-left: $spacing-xs; padding-right: $spacing-xs; }
+.px-2 { padding-left: $spacing-sm; padding-right: $spacing-sm; }
+.px-3 { padding-left: $spacing-base; padding-right: $spacing-base; }
+.px-4 { padding-left: $spacing-lg; padding-right: $spacing-lg; }
+.px-5 { padding-left: $spacing-xl; padding-right: $spacing-xl; }
+
+// 애니메이션 및 전환효과
+.fade-in {
+  animation: fadeIn $transition-base;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.slide-up {
+  animation: slideUp $transition-base;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+} 

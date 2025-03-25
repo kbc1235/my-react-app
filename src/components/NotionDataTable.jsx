@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchNotionDatabase } from '../services/notionService';
 import { fetchNotionDatabaseWithProxy } from '../services/notionCorsProxyService';
-import '../styles/NotionDataTable.css';
 
 function NotionDataTable() {
   const [data, setData] = useState([]);
