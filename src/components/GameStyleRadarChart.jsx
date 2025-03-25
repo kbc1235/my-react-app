@@ -62,6 +62,7 @@ function GameStyleRadarChart() {
   const [searchTerm, setSearchTerm] = useState('');
   const [description, setDescription] = useState('');
   const [isEditingDesc, setIsEditingDesc] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
 
   // Chart.js 컴포넌트 등록
@@ -140,8 +141,8 @@ function GameStyleRadarChart() {
   // 외부 클릭 감지 이벤트 리스너
   useEffect(() => {
     const handleOutsideClick = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        // 사이드바가 고정형이므로 외부 클릭 시 닫을 필요 없음
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target) && isSidebarOpen) {
+        setIsSidebarOpen(false);
       }
     };
 
@@ -152,7 +153,12 @@ function GameStyleRadarChart() {
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
     };
-  }, []);
+  }, [isSidebarOpen]);
+
+  // 사이드바 토글 함수
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   // 선택된 캐릭터 업데이트 함수
   const updateSelectedCharacter = (data, index) => {
@@ -437,6 +443,9 @@ function GameStyleRadarChart() {
           <div className="character-details">
             <h2>{characterName} <span className="character-level">Lv.{level}</span></h2>
             <p className="character-class">{characterClass}</p>
+            <button className="sidebar-toggle-button" onClick={toggleSidebar}>
+              {isSidebarOpen ? '캐릭터 목록 닫기' : '캐릭터 목록 보기'}
+            </button>
           </div>
         </div>
         
@@ -477,11 +486,13 @@ function GameStyleRadarChart() {
             <h3>캐릭터 설명</h3>
             {!isEditingDesc ? (
               <button className="edit-button" onClick={() => setIsEditingDesc(true)}>
-                편집
+                <i className="edit-icon">✎</i>
+                <span>편집</span>
               </button>
             ) : (
               <button className="save-button" onClick={handleSaveDesc}>
-                저장
+                <i className="save-icon">✓</i>
+                <span>저장</span>
               </button>
             )}
           </div>
@@ -501,8 +512,8 @@ function GameStyleRadarChart() {
         </div>
       </div>
       
-      {/* 캐릭터 목록 사이드바 (fixed 형식) */}
-      <div className="character-sidebar" ref={sidebarRef}>
+      {/* 캐릭터 목록 사이드바 (토글 가능한 형식) */}
+      <div className={`character-sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
         <h3 className="sidebar-title">캐릭터 목록</h3>
         
         <div className="search-box">

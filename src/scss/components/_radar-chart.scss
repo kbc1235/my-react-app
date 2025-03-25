@@ -29,7 +29,8 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
-  padding-right: 260px;
+  padding-right: 0;
+  transition: padding-right 0.3s ease;
   
   @include respond-to(md) {
     padding-right: 0;
@@ -245,13 +246,22 @@
   position: fixed;
   top: 0;
   right: 0;
-  width: 250px;
+  width: 280px;
   height: 100vh;
   background-color: $color-black;
   border-left: $border-width-thin solid $color-border;
   z-index: 100;
   overflow-y: auto;
-  padding-top: $spacing-base;
+  padding-top: $spacing-xl;
+  transition: transform 0.3s ease;
+  
+  &.closed {
+    transform: translateX(100%);
+  }
+  
+  &.open {
+    transform: translateX(0);
+  }
   
   .sidebar-title {
     padding: 0 $spacing-md $spacing-md;
@@ -301,6 +311,77 @@
     color: $color-text-secondary;
     border-top: $border-width-thin solid $color-border;
     margin-top: $spacing-md;
+  }
+}
+
+// 캐릭터 설명 섹션
+.character-description-section {
+  margin-top: $spacing-xl;
+  background-color: $color-card-bg;
+  border-radius: $border-radius-md;
+  padding: $spacing-lg;
+  border: $border-width-thin solid $color-border;
+  
+  .description-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-md;
+    
+    h3 {
+      margin: 0;
+      font-size: $font-size-md;
+      font-weight: $font-weight-bold;
+    }
+    
+    .edit-button, .save-button {
+      background-color: transparent;
+      border: $border-width-thin solid $color-border;
+      border-radius: $border-radius-sm;
+      padding: $spacing-xs $spacing-sm;
+      display: flex;
+      align-items: center;
+      gap: $spacing-xs;
+      font-size: $font-size-xs;
+      transition: all $transition-base;
+      
+      i {
+        font-style: normal;
+      }
+      
+      &:hover {
+        border-color: $color-accent;
+        background-color: rgba($color-accent, 0.1);
+      }
+    }
+    
+    .save-button {
+      color: $color-accent;
+    }
+  }
+  
+  .description-content {
+    min-height: 100px;
+    line-height: 1.6;
+    color: $color-text-secondary;
+  }
+  
+  .description-editor {
+    width: 100%;
+    min-height: 120px;
+    padding: $spacing-md;
+    border: $border-width-thin solid $color-border;
+    border-radius: $border-radius-sm;
+    background-color: $color-dark-bg;
+    color: $color-text-primary;
+    font-family: inherit;
+    line-height: 1.6;
+    resize: vertical;
+    
+    &:focus {
+      border-color: $color-accent;
+      outline: none;
+    }
   }
 }
 
@@ -355,5 +436,25 @@
       color: $color-text-muted;
       margin-top: $spacing-xs;
     }
+  }
+}
+
+// 캐릭터 선택 버튼
+.sidebar-toggle-button {
+  @include button-default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  font-size: $font-size-sm;
+  padding: $spacing-sm $spacing-base;
+  margin-top: $spacing-sm;
+  background-color: $color-dark-bg;
+  border: $border-width-thin solid $color-accent;
+  color: $color-text-primary;
+  transition: all $transition-base;
+  
+  &:hover {
+    background-color: rgba($color-accent, 0.2);
   }
 } 
