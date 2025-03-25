@@ -9,11 +9,16 @@
   publish = "dist"
   framework = "vite"
 
-# Netlify Functions 환경 변수 설정
+# Netlify Functions 환경 변수 설정 (프로덕션용)
 [build.environment]
   NOTION_API_KEY = "from_netlify_ui"
   VITE_API_MODE = "production"
   VITE_IS_NETLIFY = "true"
+
+# 개발 환경용 환경 변수 (Netlify CLI 사용 시)
+[dev.environment]
+  VITE_API_MODE = "development"
+  VITE_IS_NETLIFY = "false"
 
 [[redirects]]
   from = "/api/notion/*"
@@ -23,4 +28,4 @@
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200 
+  status = 200

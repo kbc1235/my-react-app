@@ -3,24 +3,32 @@
  * @returns {Object} 환경 정보
  */
 export const getEnvironment = () => {
-  // 항상 프로덕션 모드로 설정
-  console.log('환경 설정: 항상 프로덕션 모드로 동작');
+  // .env 파일에서 환경 설정 읽기
+  const apiMode = import.meta.env.VITE_API_MODE || 'development';
+  const isNetlify = import.meta.env.VITE_IS_NETLIFY === 'true';
+  
+  console.log(`환경 설정: API 모드=${apiMode}, Netlify=${isNetlify}`);
   
   return {
-    isProduction: true,
-    isNetlify: true,
-    isDevelopment: false,
-    apiMode: 'production'
+    isProduction: apiMode === 'production',
+    isNetlify: isNetlify,
+    isDevelopment: apiMode === 'development',
+    apiMode: apiMode
   };
 };
+
 
 /**
  * 환경에 맞는 API 엔드포인트 접두사를 반환하는 함수
  * @returns {string} API 엔드포인트 접두사
  */
 export const getApiEndpointPrefix = () => {
-  // 항상 Netlify Functions 사용
-  return '/.netlify/functions/notion';
+  const env = getEnvironment();
+  if (env.isNetlify && env.isProduction) {
+    return '/.netlify/functions/notion';
+  } else {
+    return '/api/notion';
+  }
 };
 
 /**
@@ -30,17 +38,21 @@ export const getApiEndpointPrefix = () => {
  * @returns {Promise<Response>} fetch 응답
  */
 export const notionApiRequest = async (endpoint, options = {}) => {
+  const env = getEnvironment();
   const prefix = getApiEndpointPrefix();
   const url = `${prefix}${endpoint}`;
   
-  console.log(`API 요청: ${url} (프로덕션 모드)`);
+  console.log(`API 요청: ${url} (${env.apiMode} 모드)`);
   
   try {
+    const apiKey = import.meta.env.VITE_NOTION_API_KEY;
     // 수정된 옵션 - API 키를 바디에 포함시키지 않음
     const modifiedOptions = {
       ...options,
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'Notion-Version': '2022-06-28',
         ...options.headers
       }
     };
