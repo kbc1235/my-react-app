@@ -475,6 +475,10 @@
     .character-item-content {
       flex: 1;
       cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-right: $spacing-sm;
     }
     
     .character-select-checkbox {
@@ -483,6 +487,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
       
       input[type="checkbox"] {
         position: absolute;

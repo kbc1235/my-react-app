@@ -308,46 +308,57 @@ function GameStyleRadarChart() {
       const classes = ['직장인 과부화형', ' 육아맘 리커버리형', '바디프로젝트 형', '자기계발형', '공감커뮤니티형', '힐링 중심형'];
       setCharacterClass(classes[Math.floor(Math.random() * classes.length)]);
       
-      // 현재 선택한 회원을 비교 대상 목록에 자동으로 추가
-      setSelectedCharacters(prev => {
-        // 이미 선택된 회원인지 확인
-        const isSelected = prev.some(char => char.id === item.id);
-        
-        // 이미 선택되어 있다면 기존 목록 유지
-        if (isSelected) {
-          return prev;
-        }
-        
-        // 최대 4명까지만 선택 가능하도록 제한
-        if (prev.length >= 4) {
-          // 가장 오래된 항목(첫 번째 항목) 제거하고 새 항목 추가
-          const newSelection = [...prev.slice(1), {
+      // 비교 모드가 활성화된 경우에만 selectedCharacters 배열 업데이트
+      if (isCompareEnabled) {
+        setSelectedCharacters(prev => {
+          // 이미 선택된 회원인지 확인
+          const isSelected = prev.some(char => char.id === item.id);
+          
+          // 이미 선택되어 있다면 기존 목록 유지
+          if (isSelected) {
+            return prev;
+          }
+          
+          // 최대 4명까지만 선택 가능하도록 제한
+          if (prev.length >= 4) {
+            // 가장 오래된 항목(첫 번째 항목) 제거하고 새 항목 추가
+            const newSelection = [...prev.slice(1), {
+              id: item.id,
+              name: name,
+              index: index,
+              data: transformedData.chartData.datasets[0].data,
+              labels: transformedData.chartData.labels
+            }];
+            
+            // 4명 초과 시 안내 메시지
+            openModal({
+              title: '선택 제한',
+              message: '최대 4명까지만 비교할 수 있어 가장 먼저 선택한 회원이 제외되었습니다.',
+              type: 'info'
+            });
+            
+            return newSelection;
+          }
+          
+          // 새 항목 추가
+          return [...prev, {
             id: item.id,
             name: name,
             index: index,
             data: transformedData.chartData.datasets[0].data,
             labels: transformedData.chartData.labels
           }];
-          
-          // 4명 초과 시 안내 메시지
-          openModal({
-            title: '선택 제한',
-            message: '최대 4명까지만 비교할 수 있어 가장 먼저 선택한 회원이 제외되었습니다.',
-            type: 'info'
-          });
-          
-          return newSelection;
-        }
-        
-        // 새 항목 추가
-        return [...prev, {
+        });
+      } else {
+        // 비교 모드가 비활성화된 경우, 현재 선택된 회원만 유지
+        setSelectedCharacters([{
           id: item.id,
           name: name,
           index: index,
           data: transformedData.chartData.datasets[0].data,
           labels: transformedData.chartData.labels
-        }];
-      });
+        }]);
+      }
       
     } catch (error) {
       console.error('회원 데이터 업데이트 중 오류 발생:', error);
@@ -717,28 +728,76 @@ function GameStyleRadarChart() {
     };
   }
 
-  // 회원 체크박스 토글 처리 함수 수정
+  // 비교 모드 활성화 상태 토글 함수
+  const toggleCompareEnabled = () => {
+    const newState = !isCompareEnabled;
+    setIsCompareEnabled(newState);
+    
+    if (newState) {
+      // 비교 모드 활성화 시
+      const currentItem = notionData[selectedIndex];
+      if (currentItem) {
+        const name = getCharacterName(currentItem, selectedIndex);
+        const transformedData = transformDataForGameChart(currentItem);
+        
+        // 현재 회원이 이미 선택되어 있는지 확인
+        const isCurrentSelected = selectedCharacters.some(char => char.id === currentItem.id);
+        
+        if (isCurrentSelected) {
+          // 이미 선택되어 있다면 아무것도 하지 않음
+          console.log('현재 회원이 이미 선택되어 있음:', name);
+        } else {
+          // 현재 회원 데이터 준비
+          const currentCharData = {
+            id: currentItem.id,
+            name: name,
+            index: selectedIndex,
+            data: transformedData.chartData.datasets[0].data,
+            labels: transformedData.chartData.labels
+          };
+          
+          // 현재 선택 목록에 추가 (기존 배열은 초기화하고 현재 회원만 포함)
+          setSelectedCharacters([currentCharData]);
+        }
+      }
+    } else {
+      // 비교 모드 비활성화 시
+      setIsCompareMode(false); // 비교 모드 보기 끄기
+      // 현재 선택된 회원만 유지하고 나머지는 초기화
+      const currentCharacter = selectedCharacters.find(char => 
+        char.id === notionData[selectedIndex]?.id
+      );
+      setSelectedCharacters(currentCharacter ? [currentCharacter] : []);
+    }
+  };
+
+  // 회원 체크박스 토글 처리 함수
   const handleToggleCharacterSelect = (item, index) => {
+    // 비교 모드가 활성화되지 않았다면 아무것도 하지 않음
+    if (!isCompareEnabled) return;
+    
     const originalIndex = notionData.findIndex(dataItem => dataItem.id === item.id);
     const characterName = getCharacterName(item, index);
     
-    // 현재 표시 중인 회원은 체크 해제 불가능
+    // 현재 표시 중인 회원은 체크 해제 불가능 - 항상 선택 상태로 유지
     if (item.id === notionData[selectedIndex]?.id) {
       const isSelected = selectedCharacters.some(char => char.id === item.id);
-      // 이미 선택되어 있지 않은 경우에만 추가 (일반적으로 이 경우는 없어야 함)
+      
+      // 현재 회원이 선택되어 있지 않은 경우 (비정상 상태), 강제로 선택에 추가
       if (!isSelected) {
+        const transformedData = transformDataForGameChart(notionData[originalIndex]);
         setSelectedCharacters(prev => [
-          ...prev, 
+          ...prev,
           { 
             id: item.id, 
             name: characterName,
             index: originalIndex,
-            data: transformDataForGameChart(notionData[originalIndex]).chartData.datasets[0].data,
-            labels: transformDataForGameChart(notionData[originalIndex]).chartData.labels
+            data: transformedData.chartData.datasets[0].data,
+            labels: transformedData.chartData.labels
           }
         ]);
       } else {
-        // 이미 선택된 경우, 체크 해제 시도 시 경고 메시지
+        // 현재 선택된 경우, 체크 해제 시도 시 경고 메시지
         openModal({
           title: '제거 불가',
           message: '현재 보고 있는 회원은 비교 대상에서 제외할 수 없습니다.',
@@ -748,6 +807,7 @@ function GameStyleRadarChart() {
       return;
     }
     
+    // 다른 회원들 토글 처리
     setSelectedCharacters(prev => {
       // 이미 선택된 회원인지 확인
       const isSelected = prev.some(char => char.id === item.id);
@@ -758,7 +818,7 @@ function GameStyleRadarChart() {
       } else {
         // 최대 4명까지만 선택 가능
         if (prev.length >= 4) {
-          // alert 대신 모달 사용
+          // 경고 모달 표시
           openModal({
             title: '선택 제한',
             message: '최대 4명까지만 비교할 수 있습니다.',
@@ -782,7 +842,7 @@ function GameStyleRadarChart() {
     });
   };
 
-  // 비교 모드 토글 함수 수정
+  // 비교 모드 토글 함수
   const toggleCompareMode = () => {
     if (selectedCharacters.length < 2) {
       // alert 대신 모달 사용
@@ -795,22 +855,6 @@ function GameStyleRadarChart() {
     }
     
     setIsCompareMode(!isCompareMode);
-  };
-
-  // 비교 모드 활성화 상태 토글 함수 추가
-  const toggleCompareEnabled = () => {
-    const newState = !isCompareEnabled;
-    setIsCompareEnabled(newState);
-    
-    // 비교 모드 비활성화 시 선택 상태 및 비교 모드 초기화
-    if (!newState) {
-      setIsCompareMode(false);
-      // 현재 선택된 회원만 유지하고 나머지는 초기화
-      const currentCharacter = selectedCharacters.find(char => 
-        char.id === notionData[selectedIndex]?.id
-      );
-      setSelectedCharacters(currentCharacter ? [currentCharacter] : []);
-    }
   };
 
   // 비교 차트 데이터 생성 함수
@@ -1034,7 +1078,7 @@ function GameStyleRadarChart() {
                 <span>저장</span>
               </button>
             )}
-          </div>
+          </div>       
           
           {isEditingDesc ? (
             <textarea 
@@ -1091,7 +1135,12 @@ function GameStyleRadarChart() {
                 {getCharacterName(item, index)}
               </div>
               {isCompareEnabled && (
-                <div className="character-select-checkbox">
+                <div 
+                  className="character-select-checkbox"
+                  onClick={(e) => {
+                    e.stopPropagation(); // 이벤트 버블링 중지
+                  }}
+                >
                   <input
                     type="checkbox"
                     id={`character-checkbox-${item.id}`}
