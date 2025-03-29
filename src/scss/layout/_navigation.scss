@@ -1,5 +1,5 @@
-@use '../abstracts/variables' as *;
-@use '../abstracts/mixins' as *;
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
 
 .app-tabs {
   display: flex;
@@ -10,13 +10,19 @@
   z-index: $z-index-sticky - 1;
   margin-bottom: $spacing-base;
   border-bottom: $border-width-thin solid $color-border-light;
-  
+
   @include respond-to(md) {
     overflow-x: auto;
     justify-content: flex-start;
     padding-bottom: $spacing-sm;
-    
+
     @include custom-scrollbar;
+  }
+  &.scrolled {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
   }
 }
 
@@ -33,15 +39,15 @@
   transition: all $transition-base;
   position: relative;
   outline: none;
-  
+
   @include respond-to(md) {
     padding: $spacing-md $spacing-base;
     font-size: $font-size-xs;
     white-space: nowrap;
   }
-  
+
   &:after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 50%;
@@ -51,25 +57,25 @@
     background-color: $color-accent;
     transition: width $transition-base;
   }
-  
+
   &:hover {
     color: $color-text-primary;
-    
+
     &:after {
       width: 50%;
     }
   }
-  
+
   &:active {
     transform: translateY(1px);
   }
-  
+
   &.active {
     color: $color-accent;
     font-weight: $font-weight-bold;
-    
+
     &:after {
       width: 80%;
     }
   }
-} 
+}

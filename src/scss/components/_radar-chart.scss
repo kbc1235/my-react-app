@@ -1,5 +1,5 @@
-@use '../abstracts/variables' as *;
-@use '../abstracts/mixins' as *;
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
 
 .game-chart-container {
   background-color: $color-black;
@@ -14,13 +14,13 @@
   position: relative;
   overflow: hidden;
   display: flex;
-  
+
   @include respond-to(md) {
     padding: $spacing-base;
     margin: $spacing-base auto;
     flex-direction: column;
   }
-  
+
   @include respond-to(sm) {
     padding: $spacing-sm;
     margin: $spacing-sm auto;
@@ -38,59 +38,59 @@
   flex-direction: column;
   padding-right: 0;
   transition: padding-right 0.3s ease;
-  
+
   @include respond-to(md) {
     padding-right: 0;
     margin-bottom: 60px;
   }
-  
+
   // 모바일 뷰 최적화
   &.mobile-view {
     .radar-chart-wrapper {
       margin-top: 10px;
-      
+
       canvas {
         max-width: 95%;
         margin: 0 auto;
       }
     }
-    
+
     .compare-view {
       .compare-chart-container {
         canvas {
           max-width: 95%;
         }
       }
-      
+
       .compare-title {
         font-size: 14px;
       }
     }
-    
+
     .game-character-info {
       padding: 10px;
-      
+
       h2 {
         font-size: 16px;
       }
-      
+
       .character-meta {
         font-size: 12px;
       }
     }
-    
+
     .stat-info-section {
       .stat-item {
         padding: 8px;
-        
+
         .stat-name {
           font-size: 11px;
         }
-        
+
         .stat-value {
           font-size: 16px;
         }
-        
+
         .stat-ratio {
           font-size: 10px;
         }
@@ -111,10 +111,10 @@
   position: relative;
   overflow: hidden;
   box-shadow: 0 0 15px rgba($color-accent, 0.2);
-  
+
   // 배경 장식 효과
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -122,33 +122,33 @@
     height: 3px;
     background: linear-gradient(90deg, transparent, $color-accent, transparent);
   }
-  
+
   @include respond-to(sm) {
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: $spacing-md;
     padding: $spacing-sm;
-    
+
     .character-portrait {
       width: 60px;
       height: 60px;
       margin-bottom: $spacing-sm;
-      
+
       i {
         font-size: 24px;
       }
     }
-    
+
     .character-details h2 {
       font-size: $font-size-sm;
       margin-bottom: 5px;
     }
-    
+
     .character-meta {
       gap: 5px;
       margin-bottom: 5px;
     }
-    
+
     .sidebar-toggle-button {
       padding: 5px 10px;
       font-size: 12px;
@@ -170,12 +170,12 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 0 10px rgba($color-accent, 0.3);
-  
+
   i {
     font-size: 32px;
     color: rgba($color-accent, 0.5);
   }
-  
+
   @include respond-to(sm) {
     margin-bottom: $spacing-md;
   }
@@ -197,7 +197,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  
+
   h2 {
     margin: 0 0 $spacing-xs 0;
     font-size: $font-size-md;
@@ -236,7 +236,7 @@
   background-color: rgba($color-dark-bg, 0.5);
   border-radius: 12px;
   border: 1px solid rgba($color-border, 0.3);
-  
+
   i {
     margin-right: 4px;
     color: #ffcc00;
@@ -247,20 +247,30 @@
   display: inline-flex;
   align-items: center;
   font-size: $font-size-xs;
-  color: #50fa7b;
-  background-color: rgba(80, 250, 123, 0.1);
+  color: #ff5555;
+  background-color: rgba(255, 85, 85, 0.1);
   padding: 2px 8px;
   border-radius: 12px;
-  border: 1px solid rgba(80, 250, 123, 0.3);
-  
+  border: 1px solid rgba(255, 85, 85, 0.3);
+
   &::before {
-    content: '';
+    content: "";
     display: inline-block;
     width: 6px;
     height: 6px;
-    background-color: #50fa7b;
+    background-color: #ff5555;
     border-radius: 50%;
     margin-right: 4px;
+  }
+
+  &.active {
+    background-color: rgba(80, 250, 123, 0.1);
+    color: #50fa7b;
+    border: 1px solid rgba(80, 250, 123, 0.3);
+
+    &::before {
+      background-color: #50fa7b;
+    }
   }
 }
 
@@ -289,7 +299,7 @@
   padding: $spacing-md $spacing-base;
   background-color: $color-dark-bg;
   border-bottom: $border-width-thin solid $color-border;
-  
+
   @include respond-to(sm) {
     flex-direction: column;
     gap: $spacing-md;
@@ -308,7 +318,7 @@
   display: flex;
   margin-left: auto;
   gap: $spacing-sm;
-  
+
   @include respond-to(sm) {
     margin-left: 0;
   }
@@ -323,7 +333,7 @@
   font-size: $font-size-xs;
   cursor: pointer;
   transition: all $transition-base;
-  
+
   &.active {
     background-color: $color-accent;
     color: $color-black;
@@ -342,7 +352,7 @@
   padding: $spacing-md $spacing-base;
   border-bottom: $border-width-thin solid $color-border;
   transition: all $transition-base;
-  
+
   &:hover {
     background-color: $color-card-bg;
   }
@@ -394,46 +404,43 @@
 // 회원 목록 사이드바 (fixed 형식으로 변경)
 .character-sidebar {
   position: fixed;
-  top: 0;
+  top: 140px;
   right: 0;
   width: 280px;
-  height: 100vh;
+  height: calc(100vh - 140px);
   background-color: $color-black;
   border-left: $border-width-thin solid $color-border;
   z-index: 100;
   overflow-y: auto;
-  padding-top: 134px;
   transition: transform 0.3s ease;
-  
+
   @include respond-to(md) {
     width: 260px;
-    padding-top: 80px;
   }
-  
+
   @include respond-to(sm) {
     width: 240px;
-    padding-top: 60px;
   }
-  
+
   &.closed {
     transform: translateX(100%);
   }
-  
+
   &.open {
     transform: translateX(0);
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
   }
-  
+
   .sidebar-title {
-    padding: 0 $spacing-md $spacing-md;
+    padding: $spacing-md $spacing-md;
     margin-bottom: $spacing-md;
     font-size: $font-size-lg;
     border-bottom: $border-width-thin solid $color-border;
   }
-  
+
   .search-box {
     padding: 0 $spacing-md $spacing-md;
-    
+
     .search-input {
       width: 100%;
       padding: $spacing-sm;
@@ -443,52 +450,56 @@
       color: $color-text-primary;
     }
   }
-  
+
   .character-list {
     max-height: calc(100vh - 160px);
     overflow-y: auto;
     @include custom-scrollbar;
+
+    &.open {
+      max-height: calc(100% - 322px);
+    }
   }
-  
+
   .character-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: $spacing-md;
     cursor: pointer;
     transition: all $transition-base;
     border-bottom: $border-width-thin solid $color-border-light;
-    
+
     &:hover {
       background-color: $color-card-bg;
     }
-    
+
     &.active {
       background-color: rgba($color-accent, 0.2);
       border-left: 3px solid $color-accent;
     }
-    
+
     &.selected-for-compare {
       background-color: rgba($color-accent, 0.1);
     }
-    
+
     .character-item-content {
       flex: 1;
       cursor: pointer;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      padding-right: $spacing-sm;
+      padding: $spacing-md;
     }
-    
+
     .character-select-checkbox {
       margin-left: $spacing-sm;
+      padding-right: $spacing-md;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      
+
       input[type="checkbox"] {
         position: absolute;
         opacity: 0;
@@ -496,7 +507,7 @@
         height: 0;
         z-index: -1;
       }
-      
+
       .custom-checkbox {
         display: inline-block;
         width: 18px;
@@ -507,13 +518,13 @@
         position: relative;
         cursor: pointer;
         transition: all 0.2s ease;
-        
+
         &:hover {
           background-color: rgba($color-accent, 0.1);
         }
-        
+
         &:after {
-          content: '';
+          content: "";
           position: absolute;
           display: none;
           left: 5px;
@@ -525,29 +536,29 @@
           transform: rotate(45deg);
         }
       }
-      
+
       input[type="checkbox"]:checked + .custom-checkbox {
         background-color: rgba($color-accent, 0.2);
-        
+
         &:after {
           display: block;
         }
       }
-      
+
       input[type="checkbox"]:focus + .custom-checkbox {
         box-shadow: 0 0 0 2px rgba($color-accent, 0.5);
       }
-      
+
       // 현재 선택된 회원의 체크박스 스타일
       .custom-checkbox.locked {
         background-color: rgba($color-accent, 0.15);
         border-color: rgba($color-accent, 0.7);
         position: relative;
-        
+
         // 잠금 아이콘 추가
         &:before {
-          content: '\f023'; // 자물쇠 모양 아이콘
-          font-family: 'FontAwesome';
+          content: "\f023"; // 자물쇠 모양 아이콘
+          font-family: "FontAwesome";
           position: absolute;
           font-size: 10px;
           right: -4px;
@@ -565,7 +576,7 @@
       }
     }
   }
-  
+
   .sidebar-footer {
     padding: $spacing-md;
     font-size: $font-size-xs;
@@ -578,7 +589,7 @@
     z-index: 10;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
   }
-  
+
   // 사이드바 모바일 최적화 추가 스타일
   @include respond-to(sm) {
     .sidebar-title {
@@ -586,21 +597,21 @@
       padding: 0 $spacing-sm $spacing-sm;
       margin-bottom: $spacing-sm;
     }
-    
+
     .search-box {
       padding: 0 $spacing-sm $spacing-sm;
-      
+
       .search-input {
         padding: 6px;
         font-size: 12px;
       }
     }
-    
+
     .character-item {
       padding: $spacing-sm;
       font-size: 12px;
     }
-    
+
     .sidebar-footer {
       padding: $spacing-sm;
     }
@@ -614,20 +625,21 @@
   border-radius: $border-radius-md;
   padding: $spacing-lg;
   border: $border-width-thin solid $color-border;
-  
+
   .description-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: $spacing-md;
-    
+
     h3 {
       margin: 0;
       font-size: $font-size-md;
       font-weight: $font-weight-bold;
     }
-    
-    .edit-button, .save-button {
+
+    .edit-button,
+    .save-button {
       background-color: transparent;
       border: $border-width-thin solid $color-border;
       border-radius: $border-radius-sm;
@@ -637,28 +649,28 @@
       gap: $spacing-xs;
       font-size: $font-size-xs;
       transition: all $transition-base;
-      
+
       i {
         font-style: normal;
       }
-      
+
       &:hover {
         border-color: $color-accent;
         background-color: rgba($color-accent, 0.1);
       }
     }
-    
+
     .save-button {
       color: $color-accent;
     }
   }
-  
+
   .description-content {
     min-height: 100px;
     line-height: 1.6;
     color: $color-text-secondary;
   }
-  
+
   .description-editor {
     width: 100%;
     min-height: 120px;
@@ -670,7 +682,7 @@
     font-family: inherit;
     line-height: 1.6;
     resize: vertical;
-    
+
     &:focus {
       border-color: $color-accent;
       outline: none;
@@ -685,44 +697,44 @@
   max-height: 550px;
   margin: 0 auto $spacing-xl;
   position: relative;
-  
+
   canvas {
     max-width: 100%;
     height: auto !important;
     max-height: 400px;
     margin: 0 auto;
   }
-  
+
   // 비교 모드일 때 차트 래퍼 스타일 조정
   .compare-view & {
     min-height: 480px;
     max-height: 550px;
   }
-  
+
   // 모바일 대응
   @include respond-to(md) {
     min-height: 350px;
     max-height: 450px;
-    
+
     canvas {
       max-height: 350px;
     }
-    
+
     .compare-view & {
       min-height: 400px;
       max-height: 450px;
     }
   }
-  
+
   @include respond-to(sm) {
     min-height: 300px;
     max-height: 400px;
     margin-bottom: $spacing-md;
-    
+
     canvas {
       max-height: 300px;
     }
-    
+
     .compare-view & {
       min-height: 350px;
       max-height: 400px;
@@ -739,12 +751,12 @@
   border-radius: $border-radius-md;
   padding: $spacing-lg;
   margin-top: $spacing-lg;
-  
+
   @include respond-to(md) {
     grid-template-columns: repeat(2, 1fr);
     padding: $spacing-md;
   }
-  
+
   @include respond-to(sm) {
     grid-template-columns: repeat(2, 1fr);
     gap: $spacing-sm;
@@ -752,7 +764,7 @@
     margin-top: $spacing-md;
     border-radius: $border-radius-sm;
   }
-  
+
   .stat-item {
     display: flex;
     flex-direction: column;
@@ -761,7 +773,7 @@
     background-color: rgba($color-dark-bg, 0.5);
     border-radius: $border-radius-sm;
     border: $border-width-thin solid $color-border;
-    
+
     .stat-name {
       font-size: $font-size-sm;
       color: $color-text-secondary;
@@ -769,13 +781,13 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-    
+
     .stat-value {
       font-size: $font-size-lg;
       font-weight: $font-weight-bold;
       color: $color-accent;
     }
-    
+
     .stat-ratio {
       font-size: $font-size-xs;
       color: $color-text-muted;
@@ -799,11 +811,11 @@
   color: $color-text-primary;
   transition: all $transition-base;
   align-self: flex-start;
-  
+
   i {
     font-size: 14px;
   }
-  
+
   &:hover {
     background-color: rgba($color-accent, 0.2);
     transform: translateY(-1px);
@@ -937,7 +949,9 @@
 }
 
 // 로딩 및 에러 상태 컨테이너
-.game-loading, .game-error, .game-no-data {
+.game-loading,
+.game-error,
+.game-no-data {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -945,35 +959,38 @@
   padding: $spacing-lg;
   text-align: center;
   width: 100%;
-  
+
   p {
     margin-bottom: $spacing-lg;
     font-size: $font-size-lg;
     color: $color-text-secondary;
   }
-  
-  .loading-subtext, .no-data-subtext {
+
+  .loading-subtext,
+  .no-data-subtext {
     font-size: $font-size-sm;
     margin-top: -$spacing-md;
     color: $color-text-muted;
   }
-  
-  .loading-icon, .error-icon, .no-data-icon {
+
+  .loading-icon,
+  .error-icon,
+  .no-data-icon {
     margin-bottom: $spacing-lg;
-    
+
     i {
       color: $color-accent;
     }
   }
-  
+
   .error-icon i {
     color: #ff6b6b;
   }
-  
+
   .no-data-icon i {
     color: #aaa;
   }
-  
+
   .retry-button {
     @include button-default;
     display: flex;
@@ -987,7 +1004,7 @@
     border: $border-width-thin solid #ff6b6b;
     color: #ff6b6b;
     transition: all $transition-base;
-    
+
     &:hover {
       background-color: rgba(#ff6b6b, 0.2);
       transform: translateY(-1px);
@@ -1009,7 +1026,7 @@
   gap: $spacing-sm;
   padding: $spacing-sm 0;
   border-top: $border-width-thin solid rgba($color-border, 0.5);
-  
+
   .selected-count {
     font-size: $font-size-xs;
     color: $color-text-secondary;
@@ -1017,16 +1034,16 @@
     margin-bottom: $spacing-xs;
     display: flex;
     align-items: center;
-    
+
     &::before {
-      content: '\f0c0'; // 사용자 그룹 아이콘
-      font-family: 'FontAwesome';
+      content: "\f0c0"; // 사용자 그룹 아이콘
+      font-family: "FontAwesome";
       margin-right: $spacing-xs;
       color: $color-accent;
       font-size: 12px;
     }
   }
-  
+
   .compare-toggle-button {
     @include button-default;
     font-size: $font-size-xs;
@@ -1038,27 +1055,27 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     &::before {
-      content: '\f066'; // 비교 아이콘
-      font-family: 'FontAwesome';
+      content: "\f066"; // 비교 아이콘
+      font-family: "FontAwesome";
       margin-right: $spacing-xs;
       font-size: 11px;
     }
-    
+
     &.active {
       background-color: rgba($color-accent, 0.2);
-      
+
       &::before {
-        content: '\f068'; // 마이너스 아이콘 (비교 모드 종료)
+        content: "\f068"; // 마이너스 아이콘 (비교 모드 종료)
       }
     }
-    
+
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
-    
+
     &:hover:not(:disabled) {
       background-color: rgba($color-accent, 0.3);
       transform: translateY(-1px);
@@ -1074,36 +1091,36 @@
   height: 100%;
   max-height: 550px;
   animation: fadeSlideIn 0.3s ease-in-out;
-  
+
   // 모바일 최적화
   @include respond-to(sm) {
     max-height: 480px;
-    
+
     .compare-view-header {
       margin-bottom: 5px;
     }
   }
-  
+
   .compare-view-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: $spacing-sm;
-    
+
     @include respond-to(md) {
       flex-direction: column;
       align-items: flex-start;
     }
   }
-  
+
   .compare-title {
     font-size: $font-size-md;
     color: $color-text-primary;
     position: relative;
     margin: 0;
-    
+
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       bottom: -4px;
       left: 0;
@@ -1111,13 +1128,13 @@
       height: 2px;
       background-color: rgba($color-accent, 0.5);
     }
-    
+
     @include respond-to(sm) {
       font-size: $font-size-sm;
       margin-bottom: $spacing-sm;
     }
   }
-  
+
   .compare-chart-container {
     flex: 1;
     width: 100%;
@@ -1128,18 +1145,18 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    
+
     @include respond-to(md) {
       height: 400px;
       max-height: 400px;
     }
-    
+
     @include respond-to(sm) {
       height: 350px;
       max-height: 350px;
       margin-top: 5px;
     }
-    
+
     canvas {
       max-height: 100% !important;
       width: 100% !important;
@@ -1147,7 +1164,7 @@
       margin: 0 auto;
     }
   }
-  
+
   .selected-characters-list {
     display: flex;
     flex-wrap: wrap;
@@ -1155,18 +1172,18 @@
     gap: $spacing-xs;
     margin-left: $spacing-md;
     max-width: 60%;
-    
+
     @include respond-to(md) {
       justify-content: flex-start;
       margin-left: 0;
       margin-top: $spacing-sm;
       max-width: 100%;
     }
-    
+
     @include respond-to(sm) {
       gap: 5px;
     }
-    
+
     .selected-character-badge {
       display: flex;
       align-items: center;
@@ -1177,42 +1194,47 @@
       font-size: $font-size-xs;
       animation: fadeSlideIn 0.3s ease-in-out;
       animation-fill-mode: both;
-      
+
       @for $i from 1 through 4 {
         &:nth-child(#{$i}) {
           animation-delay: 0.05s * $i;
         }
       }
-      
+
       @include respond-to(sm) {
         font-size: 10px;
         padding: 3px 6px;
-        
+
         .remove-character {
           font-size: 12px;
           margin-left: 3px;
         }
       }
-      
+
       // 현재 보고 있는 회원 표시
       &.current-character {
         background-color: rgba($color-dark-bg, 0.85);
         font-weight: $font-weight-bold;
         box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
         position: relative;
-        
+
         // 현재 회원 표시 배경 효과
         &::before {
-          content: '';
+          content: "";
           position: absolute;
           bottom: -2px;
           left: 5%;
           width: 90%;
           height: 2px;
-          background: linear-gradient(90deg, transparent, $color-accent, transparent);
+          background: linear-gradient(
+            90deg,
+            transparent,
+            $color-accent,
+            transparent
+          );
         }
       }
-      
+
       .current-indicator {
         display: inline-flex;
         align-items: center;
@@ -1221,17 +1243,17 @@
         margin-right: 1px;
         color: $color-accent;
         font-size: 10px;
-        
+
         @include respond-to(sm) {
           font-size: 8px;
           margin-left: 3px;
         }
-        
+
         i {
           filter: drop-shadow(0 0 2px rgba($color-accent, 0.5));
         }
       }
-      
+
       .remove-character {
         margin-left: $spacing-xs;
         background: none;
@@ -1242,11 +1264,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        
+
         &:hover {
           color: #ff6b6b;
         }
-        
+
         &:disabled {
           opacity: 0.5;
           cursor: not-allowed;
@@ -1294,46 +1316,55 @@
   position: relative;
   z-index: 20;
   overflow: visible;
-  
+
   @include respond-to(sm) {
     padding: 10px 15px;
     margin: 0 10px 10px;
     border-radius: 8px;
     border-width: 1px;
-    
+
     .compare-switch-label {
       font-size: 13px;
-      
+
       &::before {
         font-size: 14px;
         margin-right: 6px;
       }
     }
   }
-  
+
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -2px;
     left: 10%;
     width: 80%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba($color-accent, 0.7), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba($color-accent, 0.7),
+      transparent
+    );
     border-radius: 2px;
   }
-  
+
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba($color-accent, 0.1), transparent 60%);
+    background: linear-gradient(
+      135deg,
+      rgba($color-accent, 0.1),
+      transparent 60%
+    );
     border-radius: 10px;
     z-index: -1;
   }
-  
+
   .compare-switch-label {
     font-size: 16px;
     font-weight: 600;
@@ -1342,7 +1373,7 @@
     align-items: center;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     letter-spacing: 0.5px;
-    
+
     &::before {
       content: "\f24e"; // Chart icon
       font-family: "FontAwesome";
@@ -1362,24 +1393,24 @@
   height: 28px;
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
   z-index: 2;
-  
+
   input {
     opacity: 0;
     width: 0;
     height: 0;
-    
+
     &:checked + .slider {
       background-color: rgba($color-accent, 0.8);
       border-color: rgba($color-accent, 0.9);
-      
+
       &:before {
         transform: translateX(28px);
         background-color: #fff;
         box-shadow: 0 0 10px rgba($color-accent, 0.9), 0 0 5px rgba(#fff, 0.5);
       }
-      
+
       &::after {
-        content: 'ON';
+        content: "ON";
         position: absolute;
         font-size: 9px;
         font-weight: 600;
@@ -1389,9 +1420,9 @@
         text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
       }
     }
-    
+
     &:not(:checked) + .slider::after {
-      content: 'OFF';
+      content: "OFF";
       position: absolute;
       font-size: 9px;
       font-weight: 600;
@@ -1400,12 +1431,12 @@
       top: 8px;
       text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
     }
-    
+
     &:focus + .slider {
       box-shadow: 0 0 0 3px rgba($color-accent, 0.5);
     }
   }
-  
+
   .slider {
     position: absolute;
     cursor: pointer;
@@ -1414,12 +1445,12 @@
     right: 0;
     bottom: 0;
     background-color: rgba(#222, 0.9);
-    transition: .4s;
+    transition: 0.4s;
     border-radius: 34px;
     border: 1px solid rgba(#777, 0.5);
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7);
     overflow: hidden;
-    
+
     &:before {
       position: absolute;
       content: "";
@@ -1428,26 +1459,26 @@
       left: 3px;
       bottom: 2px;
       background-color: #f0f0f0;
-      transition: .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       border-radius: 50%;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
       z-index: 2;
     }
-    
+
     &.round {
       border-radius: 34px;
     }
   }
-  
+
   &:hover {
     .slider:before {
       transform: scale(1.1);
     }
-    
+
     input:checked + .slider:before {
       transform: translateX(28px) scale(1.1);
     }
-    
+
     input:not(:checked) + .slider:before {
       transform: scale(1.1);
     }
@@ -1477,4 +1508,4 @@
     padding: 2px 5px;
     margin-right: 5px;
   }
-} 
+}

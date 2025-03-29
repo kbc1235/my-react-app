@@ -1,5 +1,5 @@
-@use '../abstracts/variables' as *;
-@use '../abstracts/mixins' as *;
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
 
 .app-header {
   background-color: $color-black;
@@ -12,27 +12,27 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+
   @include respond-to(md) {
     padding: $spacing-base;
     flex-direction: column;
   }
-  
+
   .left {
     display: flex;
     align-items: center;
   }
-  
+
   .center {
     flex-grow: 1;
     text-align: center;
   }
-  
+
   .right {
     display: flex;
     align-items: center;
   }
-  
+
   h1 {
     margin: 0;
     font-size: $font-size-xl;
@@ -40,15 +40,22 @@
     color: $color-text-primary;
     text-transform: uppercase;
     letter-spacing: 1px;
-    
+
     @include respond-to(md) {
       font-size: $font-size-lg;
     }
   }
-  
+
   p {
     margin: 0;
     opacity: 0.9;
     font-size: $font-size-sm;
   }
-} 
+
+  &.scrolled {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+}
