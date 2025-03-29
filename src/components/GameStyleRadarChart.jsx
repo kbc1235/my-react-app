@@ -347,8 +347,6 @@ function GameStyleRadarChart() {
       }
       setMemberStatus(status);
 
-      console.log(status, memberProp[1].formula.string);
-
       // 설명(dec) 추출 시도
       let desc = "";
       const decProp = Object.entries(item.properties).find(

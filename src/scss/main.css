@@ -2180,7 +2180,8 @@ tr:hover {
   font-weight: 500;
   color: rgba(255, 255, 255, 0.7);
 }
-.notion-integration .input-row input, .notion-integration .input-row select {
+.notion-integration .input-row input,
+.notion-integration .input-row select {
   width: 100%;
   padding: 1rem;
   background-color: #121212;
@@ -2189,7 +2190,8 @@ tr:hover {
   color: rgba(255, 255, 255, 0.95);
   transition: border-color 0.3s ease;
 }
-.notion-integration .input-row input:focus, .notion-integration .input-row select:focus {
+.notion-integration .input-row input:focus,
+.notion-integration .input-row select:focus {
   border-color: #d8ff00;
   outline: none;
 }
@@ -2299,7 +2301,9 @@ tr:hover {
   margin-bottom: 1rem;
   font-weight: 700;
 }
-.notion-integration .table-input-container input, .notion-integration .table-input-container textarea, .notion-integration .table-input-container select {
+.notion-integration .table-input-container input,
+.notion-integration .table-input-container textarea,
+.notion-integration .table-input-container select {
   background-color: #121212;
   color: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -2379,6 +2383,149 @@ tr:hover {
   width: auto;
   cursor: pointer;
   accent-color: #d8ff00;
+}
+.notion-integration .date-range-container {
+  margin-bottom: 20px;
+}
+.notion-integration .date-range-container .date-selector {
+  position: relative;
+}
+.notion-integration .date-range-container .date-selector .date-fields {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.notion-integration .date-range-container .date-selector .date-fields .date-field {
+  padding: 10px;
+  background: #000;
+  border: 1px solid #d8ff00;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 48%;
+}
+.notion-integration .date-range-container .date-selector .date-fields .date-field span {
+  font-weight: bold;
+  margin-right: 5px;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #000;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+  z-index: 1000;
+  margin-top: 10px;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .calendar-header .month-nav {
+  background: none;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  color: #666;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .calendar-header .month-nav:hover {
+  background: #f0f0f0;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .calendar-header .current-month {
+  font-size: 16px;
+  font-weight: bold;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-bottom: 15px;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .calendar-grid .weekday {
+  text-align: center;
+  font-weight: bold;
+  padding: 8px 0;
+  color: #777;
+  font-size: 14px;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .calendar-grid .calendar-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 15px;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .calendar-grid .calendar-day.current-month {
+  color: #fff;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .calendar-grid .calendar-day.other-month {
+  color: #5f5f5f;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .calendar-grid .calendar-day:hover {
+  background-color: #1e1e1e;
+  color: #d8ff00;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .calendar-grid .calendar-day.selected {
+  background-color: #000;
+  color: white;
+  border-radius: 5px;
+  border: 1px solid #d8ff00;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .calendar-grid .calendar-day.selected:hover {
+  color: #d8ff00;
+  border: 1px solid #d8ff00;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .calendar-grid .calendar-day.in-range {
+  border: 1px solid #d8ff00;
+  background-color: rgba(229, 255, 77, 0.3019607843);
+  color: #d8ff00;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .date-range-actions {
+  display: flex;
+  flex-direction: column;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .date-range-actions .date-range-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .date-range-actions .date-range-buttons button {
+  flex: 1;
+  margin: 0 5px;
+  padding: 8px 0;
+  background: #000;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .date-range-actions .date-range-buttons button:hover {
+  background: #1e1e1e;
+  border: 1px solid #d8ff00;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .date-range-actions .done-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #000;
+  color: #d8ff00;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.notion-integration .date-range-container .date-selector .calendar-popup .date-range-actions .done-button:hover {
+  background-color: #1e1e1e;
+  border: 1px solid #d8ff00;
 }
 
 .leaderboard-container {
