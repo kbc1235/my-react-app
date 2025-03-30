@@ -140,8 +140,44 @@ const Results = ({ result, gender, onRestart }) => {
       if (footerElement) footerElement.style.display = "";
       if (brandingElement) brandingElement.style.display = "";
 
+      // 고정 크기(1080x1920)의 새 캔버스 생성
+      const targetWidth = 1080;
+      const targetHeight = 1920;
+      const fixedSizeCanvas = document.createElement("canvas");
+      fixedSizeCanvas.width = targetWidth;
+      fixedSizeCanvas.height = targetHeight;
+      const ctx = fixedSizeCanvas.getContext("2d");
+
+      // 배경 흰색으로 채우기
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, targetWidth, targetHeight);
+
+      // 원본 캔버스 이미지의 가로세로 비율 계산
+      const originalRatio = canvas.width / canvas.height;
+      const targetRatio = targetWidth / targetHeight;
+
+      let drawWidth, drawHeight, offsetX, offsetY;
+
+      // 비율에 따라 캔버스에 그릴 이미지 크기 및 위치 계산
+      if (originalRatio > targetRatio) {
+        // 원본이 더 넓은 경우 (가로로 긴 경우)
+        drawWidth = targetWidth;
+        drawHeight = drawWidth / originalRatio;
+        offsetX = 0;
+        offsetY = (targetHeight - drawHeight) / 2; // 세로 중앙 정렬
+      } else {
+        // 원본이 더 좁은 경우 (세로로 긴 경우)
+        drawHeight = targetHeight;
+        drawWidth = drawHeight * originalRatio;
+        offsetX = (targetWidth - drawWidth) / 2; // 가로 중앙 정렬
+        offsetY = 0;
+      }
+
+      // 이미지 그리기
+      ctx.drawImage(canvas, offsetX, offsetY, drawWidth, drawHeight);
+
       // 캡처된 이미지 URL 생성 및 상태 업데이트
-      const imageUrl = canvas.toDataURL("image/png");
+      const imageUrl = fixedSizeCanvas.toDataURL("image/png");
       setCapturedImage(imageUrl);
       setShowImagePopup(true);
     } catch (error) {
