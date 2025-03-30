@@ -5,6 +5,7 @@ import NotionMultiRadarChart from "./components/NotionMultiRadarChart";
 import GameStyleRadarChart from "./components/GameStyleRadarChart";
 import NotionIntegration from "./components/NotionIntegration";
 import Leaderboard from "./components/Leaderboard";
+import CrossfitTest from "./components/CrossfitTest/CrossfitTest";
 
 function App() {
   const [activeTab, setActiveTab] = useState("gameRadar");
@@ -23,6 +24,8 @@ function App() {
         return <NotionDataTable />;
       case "leaderboard":
         return <Leaderboard />;
+      case "crossfitTest":
+        return <CrossfitTest />;
       default:
         return <GameStyleRadarChart />;
     }
@@ -85,6 +88,14 @@ function App() {
               onClick={() => setActiveTab("gptIntegration")}
             >
               GPT-Notion 통합
+            </button>
+            <button
+              className={`tab-button ${
+                activeTab === "crossfitTest" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("crossfitTest")}
+            >
+              크로스핏 성향 테스트
             </button>
           </div>
 
