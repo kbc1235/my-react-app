@@ -30,20 +30,6 @@ const STAT_NAMES = {
   Name: "이름",
   Tags: "태그",
   Status: "상태",
-  // 게임 스탯 이름
-  STR: "힘",
-  DEX: "민첩",
-  CON: "체력",
-  INT: "지능",
-  WIS: "지혜",
-  CHA: "매력",
-  HP: "체력",
-  MP: "마력",
-  Attack: "공격력",
-  Defense: "방어력",
-  Speed: "속도",
-  Magic: "마법력",
-  Luck: "행운",
 };
 
 // 스켈레톤 UI 컴포넌트
@@ -115,7 +101,7 @@ function GameStyleRadarChart() {
   const [notionData, setNotionData] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [chartData, setChartData] = useState(null);
-  const [level, setLevel] = useState(1);
+  const [gender, setGender] = useState("");
   const [characterName, setCharacterName] = useState("");
   const [characterClass, setCharacterClass] = useState("");
   const [memberStatus, setMemberStatus] = useState("비활성");
@@ -363,16 +349,23 @@ function GameStyleRadarChart() {
         desc = decProp[1].rich_text.map((t) => t.plain_text).join("");
       }
 
+      let gender = "male";
+      const genderProp = Object.entries(item.properties).find(
+        ([key]) => key.toLowerCase() === "Gender"
+      );
+      if (genderProp && genderProp[1].select && genderProp[1].select.name) {
+        gender = genderProp[1].select.name;
+      }
+      setGender(gender);
+
       setDescription(desc);
       setIsEditingDesc(false);
 
-      // 레벨 랜덤 설정
-      setLevel(Math.floor(Math.random() * 50) + 1);
 
       // 회원 유형형 설정
       const classes = [
         "직장인 과부화형",
-        " 육아맘 리커버리형",
+        "육아맘 리커버리형",
         "바디프로젝트 형",
         "자기계발형",
         "공감커뮤니티형",
@@ -1085,8 +1078,14 @@ function GameStyleRadarChart() {
           </div>
           <div className="character-details">
             <h2>
-              {characterName}{" "}
-              <span className="character-level">Lv.{level}</span>
+              <span className="character-name">{characterName}</span>
+              <span className="character-gender">
+                {gender === "male" ? (
+                  <i className="fa fa-mars" title="남자" style={{ color: "#007bff", marginLeft: "5px" }}></i>
+                ) : (
+                  <i className="fa fa-venus" title="여자" style={{ color: "#ff69b4", marginLeft: "5px" }}></i>
+                )}
+              </span>
             </h2>
             <div className="character-meta">
               <span className="character-class">
