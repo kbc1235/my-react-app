@@ -24,8 +24,8 @@ function App() {
         return <NotionDataTable />;
       case "leaderboard":
         return <Leaderboard />;
-      case "crossfitTest":
-        return <CrossfitTest />;
+      // case "crossfitTest":
+      //   return <CrossfitTest />;
       default:
         return <GameStyleRadarChart />;
     }
@@ -73,7 +73,7 @@ function App() {
               }`}
               onClick={() => setActiveTab("gameRadar")}
             >
-              게임 스타일 차트
+              회원 운동 데이터
             </button>
             {/* <button
               className={`tab-button ${

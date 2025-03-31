@@ -823,10 +823,7 @@ function GameStyleRadarChart() {
           (char) => char.id === currentItem.id
         );
 
-        if (isCurrentSelected) {
-          // 이미 선택되어 있다면 아무것도 하지 않음
-          console.log("현재 회원이 이미 선택되어 있음:", name);
-        } else {
+        if (!isCurrentSelected) {
           // 현재 회원 데이터 준비
           const currentCharData = {
             id: currentItem.id,
@@ -1073,20 +1070,17 @@ function GameStyleRadarChart() {
       {/* 메인 컨텐츠 영역 */}
       <div className={`game-main-content ${isMobile ? "mobile-view" : ""}`}>
         <div className="game-character-info">
-          <div className="character-portrait">
-            <i className="fa fa-user"></i>
-          </div>
           <div className="character-details">
-            <h2>
-              <span className="character-name">{characterName}</span>
-              <span className="character-gender">
+            <div className="character-name-gender">
+              <div className="character-name">{characterName}</div>
+              <div className="character-gender">
                 {gender === "male" ? (
-                  <i className="fa fa-mars" title="남자" style={{ color: "#007bff", marginLeft: "5px" }}></i>
+                  <i className="fa fa-mars" title="남자"></i>
                 ) : (
-                  <i className="fa fa-venus" title="여자" style={{ color: "#ff69b4", marginLeft: "5px" }}></i>
+                  <i className="fa fa-venus" title="여자"></i>
                 )}
-              </span>
-            </h2>
+              </div>
+            </div>
             <div className="character-meta">
               <span className="character-class">
                 <i className="fa fa-star"></i> {characterClass}

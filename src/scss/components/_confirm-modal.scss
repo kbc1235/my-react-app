@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../abstracts/variables' as *;
 @use '../abstracts/mixins' as *;
 
@@ -70,7 +71,6 @@
   }
   
   .close-button {
-    padding:0;
     background: none;
     border: none;
     font-size: $font-size-lg;
@@ -130,7 +130,7 @@
     border: none;
     
     &:hover {
-      background-color: darken($color-accent, 10%);
+      background-color: color.adjust($color-accent, $lightness: -10%);
       transform: translateY(-2px);
     }
   }

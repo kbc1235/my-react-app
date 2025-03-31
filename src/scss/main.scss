@@ -1,4 +1,4 @@
-// 추상적 요소 (변수, 믹스인 등)
+// 변수, 믹스인
 @use 'abstracts/variables' as *;
 @use 'abstracts/mixins' as *;
 
@@ -17,8 +17,9 @@
 @use 'components/radar-chart';
 @use 'components/notion-integration';
 @use 'components/leaderboard';
+@use 'components/confirm-modal';
 
-// 외부 폰트 가져오기 - URL import는 그대로 유지해도 됨
+
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');

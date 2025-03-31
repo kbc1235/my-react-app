@@ -139,14 +139,8 @@
       }
     }
 
-    .character-details h2 {
-      font-size: $font-size-sm;
-      margin-bottom: 5px;
-    }
-
     .character-meta {
       gap: 5px;
-      margin-bottom: 5px;
     }
 
     .sidebar-toggle-button {
@@ -196,15 +190,38 @@
   flex: 1;
   position: relative;
   display: flex;
-  flex-direction: column;
-
-  h2 {
-    margin: 0 0 $spacing-xs 0;
-    font-size: $font-size-md;
-    color: $color-text-primary;
-    font-weight: $font-weight-bold;
+  align-items: center;
+  gap: $spacing-md;
+  & .character-name-gender{
     display: flex;
     align-items: center;
+    gap: $spacing-sm;
+  }
+  & .character-name{
+    font-size: 26px;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+  }
+
+  & .character-gender{
+    width:20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & .fa{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width:100%;
+      height:100%;
+      &.fa-mars{
+        color: #007bff;
+      }
+      &.fa-venus{
+        color: #ff69b4;
+      }
+    }
   }
 }
 
@@ -214,17 +231,6 @@
   align-items: center;
   flex-wrap: wrap;
   gap: $spacing-sm;
-  margin-bottom: $spacing-xs;
-}
-
-.character-level {
-  color: $color-accent;
-  font-size: $font-size-sm;
-  margin-left: $spacing-sm;
-  font-weight: $font-weight-bold;
-  background-color: rgba($color-dark-bg, 0.7);
-  padding: 2px 6px;
-  border-radius: $border-radius-sm;
 }
 
 .character-class {
@@ -647,7 +653,7 @@
       display: flex;
       align-items: center;
       gap: $spacing-xs;
-      font-size: $font-size-xs;
+      font-size: $font-size-xs; 
       transition: all $transition-base;
 
       i {
@@ -802,10 +808,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: auto;
   gap: $spacing-sm;
   font-size: $font-size-sm;
   padding: $spacing-sm $spacing-base;
-  margin-top: $spacing-sm;
   background-color: rgba($color-dark-bg, 0.7);
   border: $border-width-thin solid $color-accent;
   color: $color-text-primary;
